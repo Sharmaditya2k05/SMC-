@@ -33,7 +33,7 @@ export default function Methodology() {
           <h1 className="h1 mx-auto text-[clamp(2rem,4.2vw,3.4rem)]">
             Not Just Learning Mathematics. <em className="hi">Understanding It.</em>
           </h1>
-          <p className="lede mx-auto mt-4">Every chapter follows the same four stages.<span className="hidden lg:inline"> Scroll to move along the curve.</span></p>
+          <p className="lede mx-auto mt-4">Every chapter follows the same four stages.</p>
         </div>
         <MethodStory steps={STEPS} />
       </section>

@@ -2,7 +2,7 @@
 
 /** Scroll-storytelling pieces: chapter markers, section spy navigation and the pinned methodology graph. */
 import { useEffect, useRef, useState } from "react";
-import { motion, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 /** True while the element crosses the middle band of the viewport. */
 function useInView(ref: React.RefObject<HTMLElement | null>) {
@@ -129,70 +129,55 @@ function MethodGraph({ steps, active }: { steps: Step[]; active: number }) {
   );
 }
 
+/** The four steps play through on their own; hovering pauses, clicking a step selects it. */
 export function MethodStory({ steps }: { steps: Step[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
-  const [pinned, setPinned] = useState(false);
-  const [active, setActive] = useState(1);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const visible = useInView(ref);
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
 
-  // pin only on wide, tall-enough screens with motion allowed
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px) and (min-height: 600px)");
-    const update = () => setPinned(mq.matches && !reduce);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, [reduce]);
-  useEffect(() => {
-    if (pinned) setActive(0);
-  }, [pinned]);
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    if (pinned) setActive(Math.min(steps.length - 1, Math.floor(v * steps.length)));
-  });
+    if (reduce || paused || !visible) return;
+    const t = setInterval(() => setActive((i) => (i + 1) % steps.length), 2600);
+    return () => clearInterval(t);
+  }, [reduce, paused, visible, steps.length, active]);
 
-  const list = (
-    <ol className="relative">
-      <span className="absolute bottom-8 left-[5px] top-8 w-px bg-[var(--muted)] opacity-40" aria-hidden="true" />
-      {steps.map((s, i) => {
-        const on = i === active;
-        return (
-          <li key={s.n}>
-            <button
-              type="button"
-              onClick={() => setActive(i)}
-              aria-current={on ? "step" : undefined}
-              className={`relative grid w-full grid-cols-[auto_1fr] items-center gap-x-5 rounded-xl border py-4 pl-8 pr-4 text-left transition-all duration-300 sm:grid-cols-[auto_1fr_auto] ${on ? "border-[#F5861F]/50 bg-[var(--xii-soft)]" : "border-transparent opacity-55 hover:opacity-90"}`}
-            >
-              <span className={`absolute left-0 top-1/2 h-[11px] w-[11px] -translate-y-1/2 rounded-full border-2 ${on ? "border-[#F5861F] bg-[#F5861F] shadow-[0_0_0_5px_rgba(245,134,31,.25)]" : "border-[var(--muted)] bg-[var(--bg)]"}`} aria-hidden="true" />
-              <span className={`rounded-md px-2 py-1 font-display text-sm font-bold ${on ? "bg-[#F5861F]/20 text-[var(--blue)]" : "bg-raise"}`}>{s.n}</span>
-              <span>
-                <span className="block font-display text-2xl font-bold tracking-[-0.03em]">{s.title}</span>
-                <span className="mt-0.5 block text-[0.95rem] leading-snug">{s.text}</span>
-              </span>
-              <span className={`math col-span-2 mt-2 border-line text-[0.95rem] sm:col-span-1 sm:mt-0 sm:max-w-40 sm:border-l sm:pl-5 ${on ? "" : "text-muted"}`}>“{s.ask}”</span>
-            </button>
-          </li>
-        );
-      })}
-    </ol>
-  );
-
-  if (!pinned) {
-    return (
-      <div className="wrap grid gap-8 py-8 md:py-12 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
-        {list}
-        <div className="hidden md:block"><MethodGraph steps={steps} active={active} /></div>
-      </div>
-    );
-  }
   return (
-    <div ref={ref} style={{ height: `${steps.length * 70 + 40}vh` }}>
-      <div className="sticky top-[4.75rem] flex h-[calc(100vh-4.75rem)] items-center">
-        <div className="wrap grid grid-cols-[.85fr_1.15fr] items-center gap-10">
-          {list}
-          <MethodGraph steps={steps} active={active} />
-        </div>
+    <div
+      ref={ref}
+      className="wrap grid gap-8 py-8 md:py-14 lg:grid-cols-[.85fr_1.15fr] lg:items-center lg:gap-10"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+    >
+      <ol className="relative">
+        <span className="absolute bottom-8 left-[5px] top-8 w-px bg-[var(--muted)] opacity-40" aria-hidden="true" />
+        {steps.map((s, i) => {
+          const on = i === active;
+          return (
+            <li key={s.n}>
+              <button
+                type="button"
+                onClick={() => setActive(i)}
+                aria-current={on ? "step" : undefined}
+                className={`relative grid w-full grid-cols-[auto_1fr] items-center gap-x-5 rounded-xl border py-4 pl-8 pr-4 text-left transition-all duration-500 sm:grid-cols-[auto_1fr_auto] ${on ? "border-[#F5861F]/50 bg-[var(--xii-soft)]" : "border-transparent opacity-55 hover:opacity-90"}`}
+              >
+                <span className={`absolute left-0 top-1/2 h-[11px] w-[11px] -translate-y-1/2 rounded-full border-2 transition-all duration-500 ${on ? "border-[#F5861F] bg-[#F5861F] shadow-[0_0_0_5px_rgba(245,134,31,.25)]" : "border-[var(--muted)] bg-[var(--bg)]"}`} aria-hidden="true" />
+                <span className={`rounded-md px-2 py-1 font-display text-sm font-bold ${on ? "bg-[#F5861F]/20 text-[var(--blue)]" : "bg-raise"}`}>{s.n}</span>
+                <span>
+                  <span className="block font-display text-2xl font-bold tracking-[-0.03em]">{s.title}</span>
+                  <span className="mt-0.5 block text-[0.95rem] leading-snug">{s.text}</span>
+                </span>
+                <span className={`math col-span-2 mt-2 border-line text-[0.95rem] sm:col-span-1 sm:mt-0 sm:max-w-40 sm:border-l sm:pl-5 ${on ? "" : "text-muted"}`}>“{s.ask}”</span>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+      <div className="hidden md:block">
+        <MethodGraph steps={steps} active={active} />
       </div>
     </div>
   );
