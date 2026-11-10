@@ -19,15 +19,12 @@ With the Supabase variables left empty, content is stored as JSON files in `.dat
 
 ## Before going live – details to fill in
 
-Nothing about the teacher has been invented. These are empty until entered in **Admin → Website settings**:
+The teacher photograph, S.M.C logo and WhatsApp/phone number (99112 85808) are built in as defaults (`public/brand/`, `lib/defaults.ts`) and can be replaced in **Admin → Website settings**. Nothing else about the teacher has been invented; these stay empty until entered there:
 
 | Detail | Until it is set |
 |---|---|
-| WhatsApp number | WhatsApp buttons lead to the enquiry form instead of `wa.me` |
-| Phone number, classroom address | Shown as "to be updated" |
+| Classroom address | Shown as "to be updated" (the map and directions already work) |
 | Teacher's name, qualifications, experience, message | Shown as "To be updated" on the About page |
-| Teacher photograph | A geometric S.M.C plate fills the portrait frame |
-| Logo image | The S.M.C text wordmark is used |
 | Results, testimonials, gallery photographs | Tasteful empty states |
 
 ## Deploy (Vercel + Supabase)

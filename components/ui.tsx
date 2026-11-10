@@ -15,7 +15,7 @@ export function Logo({ settings, compact = false, onNavy = false }: { settings: 
     <span className="inline-flex items-center gap-3">
       {settings.logoUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={settings.logoUrl} alt="S.M.C logo" className="h-10 w-auto" />
+        <img src={settings.logoUrl} alt="S.M.C logo" className="h-10 w-auto rounded-[4px_14px_4px_4px] bg-[#FBF6F3] px-2.5 py-2" />
       ) : (
         <span
           aria-hidden="true"
