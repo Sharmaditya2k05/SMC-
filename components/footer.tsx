@@ -85,7 +85,7 @@ export function Footer({ settings, year }: { settings: Settings; year: number })
             </span>
           </a>
           {socials.length > 0 && (
-            <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+            <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 font-medium text-white/85">
               {socials.map((s) => (
                 <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className={a}>{s.label}</a>
               ))}

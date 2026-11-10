@@ -62,6 +62,14 @@ export default async function Contact() {
               <ClassTimeCard cls="XII" timetable={timetable} />
             </div>
             <WaButton href={wa} className="mt-5 w-full">Contact on WhatsApp</WaButton>
+            {(settings.instagram || settings.facebook || settings.youtube) && (
+              <p className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+                <span className="font-display font-bold">Follow</span>
+                {settings.instagram && <a href={settings.instagram} target="_blank" rel="noopener noreferrer" className="link">Instagram</a>}
+                {settings.facebook && <a href={settings.facebook} target="_blank" rel="noopener noreferrer" className="link">Facebook</a>}
+                {settings.youtube && <a href={settings.youtube} target="_blank" rel="noopener noreferrer" className="link">YouTube</a>}
+              </p>
+            )}
           </div>
 
           <div id="enquiry" className="card scroll-mt-28 p-6 md:p-8">

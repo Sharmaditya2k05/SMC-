@@ -13,7 +13,8 @@ export const DEFAULT_SETTINGS: Settings = {
   qualifications: "",
   experience: "10+ years",
   expertise: "Mathematics for Classes XI and XII",
-  approach: "",
+  approach:
+    "Every student learns differently. Complex concepts are simplified, fundamentals are strengthened and each student gets individual attention – building confidence and logical thinking.",
   bio:
     "Mathematics is not simply about remembering formulas or solving equations. It is about understanding patterns, developing logical thinking and learning how to approach problems with confidence.\n\nAt Siddhu Mathematics Classes, the focus is on making mathematical concepts approachable, building strong fundamentals and encouraging students to think independently.",
   philosophy: "",
@@ -28,9 +29,9 @@ export const DEFAULT_SETTINGS: Settings = {
   mapsEmbedUrl:
     "https://www.google.com/maps?q=Siddhu+Mathematics+Class&ll=28.6703477,77.4565317&z=16&output=embed",
   driveFolderUrl: "https://drive.google.com/drive/folders/1-1FSZXIS-XwbuXO9ZGFMaCh_Hd-eA_0Z",
-  instagram: "",
+  instagram: "https://www.instagram.com/siddhumathsclasses",
   youtube: "",
-  facebook: "",
+  facebook: "https://www.facebook.com/SiddhuClasses/",
   bannerEnabled: true,
   bannerText: "Class XI & XII Mathematics – Explore Available Batches.",
   syllabusXI: [
