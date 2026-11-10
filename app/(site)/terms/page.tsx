@@ -23,7 +23,7 @@ export default function Terms() {
           </div>
           <div>
             <h2>Enquiries and admission</h2>
-            <p>Sending an enquiry does not confirm a seat. Admission, fees and batch allotment are discussed directly with Siddhu Sir.</p>
+            <p>Sending a message does not confirm a seat. Admission, fees and batch allotment are discussed directly with Siddhu Sir.</p>
           </div>
           <div id="disclaimer" className="scroll-mt-28">
             <h2>Disclaimer – no guarantee of results</h2>

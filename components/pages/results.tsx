@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Award, Mail, PlayCircle, Trophy as TrophyIcon, UserRound } from "lucide-react";
+import { Award, MessageCircle, PlayCircle, Trophy as TrophyIcon, UserRound } from "lucide-react";
 import { Trophy } from "@/components/math-art";
 import { Arc, ArrowLink, NavyCTA, PageHero } from "@/components/ui";
 import { getAchievements, getTestimonials } from "@/lib/content";
@@ -100,7 +100,7 @@ export default async function Results() {
 
       <NavyCTA title={<>Start with one concept, <em className="hi">properly understood.</em></>}>
         <ArrowLink href="/courses" className="btn-onnavy"><PlayCircle size={18} aria-hidden="true" /> Explore Classes</ArrowLink>
-        <Link href="/contact#enquiry" className="btn btn-light"><Mail size={17} aria-hidden="true" /> Send an Enquiry</Link>
+        <Link href="/contact" className="btn btn-light"><MessageCircle size={17} aria-hidden="true" /> Contact Siddhu Sir</Link>
       </NavyCTA>
     </>
   );

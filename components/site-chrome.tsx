@@ -126,7 +126,8 @@ function Dropdown({ label, items, active }: { label: string; items: { href: stri
   );
 }
 
-export function Header({ settings }: Chrome) {
+export function Header({ settings, wa }: Chrome) {
+  const waProps = wa.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {};
   const pathname = usePathname();
   const [menu, setMenu] = useState(false);
   const [raised, setRaised] = useState(false);
@@ -175,9 +176,9 @@ export function Header({ settings }: Chrome) {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-          <Link href="/contact#enquiry" className="btn btn-primary btn-sm hidden whitespace-nowrap px-4 sm:inline-flex">
+          <a href={wa} {...waProps} className="btn btn-primary btn-sm hidden whitespace-nowrap px-4 sm:inline-flex">
             Enquire Now <ArrowRight size={16} aria-hidden="true" />
-          </Link>
+          </a>
           <span className="hidden h-8 w-px bg-line sm:block" aria-hidden="true" />
           <ThemeToggle />
           <button
@@ -218,9 +219,9 @@ export function Header({ settings }: Chrome) {
                   </Link>
                 </motion.div>
               ))}
-              <Link href="/contact#enquiry" className="btn btn-primary mt-6">
-                Enquire Now <ArrowRight size={17} aria-hidden="true" />
-              </Link>
+              <a href={wa} {...waProps} className="btn btn-wa mt-6">
+                <WhatsAppIcon /> Enquire on WhatsApp
+              </a>
             </div>
           </motion.nav>
         )}

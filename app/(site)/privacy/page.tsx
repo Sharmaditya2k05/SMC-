@@ -17,12 +17,12 @@ export default function Privacy() {
           <div>
             <h2>Information you give us</h2>
             <p>
-              When you send an enquiry, we receive the student&apos;s name, the parent&apos;s name (if given), a WhatsApp number, the class, a preferred batch and any message you write. This is used only to respond to your enquiry about classes.
+              This website has no forms and does not collect personal details. When you message us on WhatsApp, we see your number and whatever you choose to write, and use it only to reply to you.
             </p>
           </div>
           <div>
             <h2>What we do not do</h2>
-            <p>Enquiry details are not sold, rented or shared for marketing. They are visible only to Siddhu Sir through a password-protected dashboard.</p>
+            <p>Your number and messages are not sold, rented or shared for marketing.</p>
           </div>
           <div>
             <h2>Stored on your device</h2>
@@ -37,7 +37,7 @@ export default function Privacy() {
           <div>
             <h2>Removing your details</h2>
             <p>
-              To have an enquiry removed, <Link href="/contact" className="link">contact us</Link> with the number you used and it will be deleted.
+              To have your details removed from our contacts, <Link href="/contact" className="link">contact us</Link> and they will be deleted.
             </p>
           </div>
         </div>

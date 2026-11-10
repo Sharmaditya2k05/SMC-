@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Mail } from "lucide-react";
 import { FaqExplorer } from "@/components/interactive";
 import { NavyCTA, PageHero, WaButton } from "@/components/ui";
 import { getSettings, getTimetable } from "@/lib/content";
@@ -54,8 +53,8 @@ export default async function Faqs() {
     { topic: "Study material", q: "Are study materials available online?", text: "Yes. Selected notes are available as PDFs in the Study Material section of this website.", a: <p>Yes. Selected notes are available as PDFs in the <Link href="/study-material">Study Material</Link> section, where you can preview or download them.</p> },
     { topic: "Study material", q: "Can students access sample notes?", text: "Yes. Sample chapter-wise notes for Class XI and XII can be previewed and downloaded without signing in.", a: <p>Yes. Sample chapter-wise notes for Class XI and XII can be previewed and downloaded from the <Link href="/study-material">notes library</Link> without signing in.</p> },
     { topic: "Location", q: "Where are the classes conducted?", text: `${where} The exact location is available on Google Maps.`, a: <p>{where} <a href={settings.mapsUrl} target="_blank" rel="noopener noreferrer">Open the location in Google Maps</a> for directions.</p> },
-    { topic: "Admission", q: "How can I enquire about admission?", text: "Send a message on WhatsApp or fill in the enquiry form on the Contact page with the student's name and class.", a: <p>Send a message on WhatsApp or fill in the <Link href="/contact#enquiry">enquiry form</Link> with the student&apos;s name and class. Details about admission and fees are shared directly when you enquire.</p> },
-    { topic: "Admission", q: `How can parents contact ${sir}?`, text: `Parents can contact ${sir} on WhatsApp or through the enquiry form on the Contact page.`, a: <p>Parents can contact {sir} on WhatsApp or through the <Link href="/contact">Contact page</Link>.</p> },
+    { topic: "Admission", q: "How can I enquire about admission?", text: "Send a message on WhatsApp with the student's name and class.", a: <p>Send a message on WhatsApp with the student&apos;s name and class – the buttons on the <Link href="/contact">Contact page</Link> open the chat for you. Details about admission and fees are shared directly when you enquire.</p> },
+    { topic: "Admission", q: `How can parents contact ${sir}?`, text: `Parents can contact ${sir} on WhatsApp – the number is on the Contact page.`, a: <p>Parents can contact {sir} on WhatsApp – the number is on the <Link href="/contact">Contact page</Link>.</p> },
     { topic: "Timings", q: "Is there a separate timetable for Class XI and XII?", text: "Yes. Class XI and Class XII are taught in separate batches at different times on every teaching day.", a: <p>Yes. Class XI and Class XII are taught in separate batches at different times on every teaching day. See both on the <Link href="/timetable">timetable page</Link>.</p> },
   ];
 
@@ -75,7 +74,6 @@ export default async function Faqs() {
       </section>
       <NavyCTA title={<>Still have a <em className="hi">question?</em></>}>
         <WaButton href={waLink(settings.whatsapp, WA_MESSAGES.home)}>Contact on WhatsApp</WaButton>
-        <Link href="/contact#enquiry" className="btn btn-light"><Mail size={17} aria-hidden="true" /> Send an Enquiry</Link>
       </NavyCTA>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </>

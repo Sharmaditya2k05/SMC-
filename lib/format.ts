@@ -23,12 +23,12 @@ export function normaliseIndianMobile(input: string): string | null {
 
 /**
  * Click-to-chat link. Until a WhatsApp number is saved in the admin settings
- * there is nothing real to link to, so we send visitors to the enquiry form
+ * there is nothing real to link to, so we send visitors to the contact page
  * rather than to a made-up number.
  */
 export function waLink(number: string, message: string) {
   const n = normaliseIndianMobile(number || "");
-  if (!n) return "/contact#enquiry";
+  if (!n) return "/contact";
   return `https://wa.me/91${n}?text=${encodeURIComponent(message)}`;
 }
 

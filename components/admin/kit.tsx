@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import {
-  CalendarDays, FileText, Image as ImageIcon, Inbox, LayoutDashboard, LogOut, Megaphone, Settings, Trophy, ArrowUp, ArrowDown,
+  CalendarDays, FileText, Image as ImageIcon, LayoutDashboard, LogOut, Megaphone, Settings, Trophy, ArrowUp, ArrowDown,
 } from "lucide-react";
 
 /* ---------- API helper: every call re-checks the session on the server ---------- */
@@ -31,7 +31,6 @@ export async function uploadFile(file: File) {
 /* ---------- layout ---------- */
 const LINKS = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
-  { href: "/admin/enquiries", label: "Enquiries", icon: Inbox },
   { href: "/admin/resources", label: "Study materials", icon: FileText },
   { href: "/admin/timetable", label: "Timetable", icon: CalendarDays },
   { href: "/admin/announcements", label: "Announcements", icon: Megaphone },
@@ -46,33 +45,42 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     await api("/api/admin/session", { method: "DELETE" }).catch(() => {});
     window.location.href = "/admin/login";
   };
+  const item = "flex min-h-11 shrink-0 items-center gap-3 rounded-lg px-3 font-display text-[0.9rem] font-semibold transition-colors";
   return (
     <div className="flex min-h-dvh flex-col lg:flex-row">
-      <aside className="border-b border-line bg-surface lg:sticky lg:top-0 lg:h-dvh lg:w-64 lg:shrink-0 lg:border-b-0 lg:border-r">
+      {/* charcoal sidebar, like the site's dark sections */}
+      <aside className="relative overflow-hidden bg-deep text-white lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-[17rem] lg:shrink-0 lg:flex-col">
         <div className="flex items-center justify-between gap-4 p-4 lg:p-5">
-          <Link href="/admin" className="font-display font-bold">
-            <span className="mr-2 rounded-[3px_10px_3px_3px] bg-[var(--btn-bg)] px-2 py-1 font-serif font-normal text-[var(--btn-fg)]">S.M.C</span>Admin
+          <Link href="/admin" className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brand/smc-bulb.png" alt="" className="h-11 w-11 rounded-full bg-[#FBF6F3] object-cover" />
+            <span className="leading-none">
+              <span className="block font-display text-2xl font-extrabold tracking-[-0.04em]">SMC</span>
+              <span className="mt-1 block font-display text-[0.6rem] font-bold tracking-[0.2em] text-[#FFA54A]">ADMIN</span>
+            </span>
           </Link>
-          <Link href="/" className="link text-sm lg:hidden">View site</Link>
+          <Link href="/" className="text-sm text-white/75 underline underline-offset-4 lg:hidden">View site</Link>
         </div>
-        <nav aria-label="Admin" className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col lg:overflow-visible">
+        <nav aria-label="Admin" className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-1 lg:flex-col lg:overflow-visible">
           {LINKS.map((l) => {
             const on = l.href === "/admin" ? pathname === "/admin" : pathname.startsWith(l.href);
             return (
-              <Link key={l.href} href={l.href} aria-current={on ? "page" : undefined} className={`flex min-h-11 shrink-0 items-center gap-3 rounded-md px-3 text-[0.92rem] font-medium ${on ? "bg-[var(--btn-bg)] text-[var(--btn-fg)]" : "hover:bg-raise"}`}>
+              <Link key={l.href} href={l.href} aria-current={on ? "page" : undefined} className={`${item} ${on ? "bg-[#F5861F] text-[#16171B]" : "text-white/80 hover:bg-white/10 hover:text-white"}`}>
                 <l.icon size={17} aria-hidden="true" /> {l.label}
               </Link>
             );
           })}
-          <div className="hidden lg:mt-4 lg:block lg:border-t lg:border-line lg:pt-4">
-            <Link href="/" target="_blank" className="flex min-h-11 items-center px-3 text-[0.92rem] hover:underline">View website</Link>
+          <div className="hidden lg:mt-auto lg:block lg:border-t lg:border-white/15 lg:pt-3">
+            <Link href="/" target="_blank" className={`${item} text-white/80 hover:bg-white/10 hover:text-white`}>View website</Link>
           </div>
-          <button type="button" onClick={logout} className="flex min-h-11 shrink-0 items-center gap-3 rounded-md px-3 text-[0.92rem] font-medium hover:bg-raise">
+          <button type="button" onClick={logout} className={`${item} text-white/80 hover:bg-white/10 hover:text-white lg:mb-3`}>
             <LogOut size={17} aria-hidden="true" /> Sign out
           </button>
         </nav>
       </aside>
-      <main className="min-w-0 flex-1 p-5 md:p-8 lg:p-10">{children}</main>
+      <main className="grid-paper min-w-0 flex-1 p-5 md:p-8 lg:p-10">
+        <div className="mx-auto max-w-5xl">{children}</div>
+      </main>
     </div>
   );
 }
@@ -81,7 +89,7 @@ export function PageTitle({ title, intro, children }: { title: string; intro?: s
   return (
     <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
       <div>
-        <h1 className="font-display text-3xl font-bold">{title}</h1>
+        <h1 className="bar-title text-3xl">{title}</h1>
         {intro && <p className="mt-1.5 max-w-2xl text-muted">{intro}</p>}
       </div>
       {children && <div className="flex shrink-0 flex-wrap gap-2">{children}</div>}

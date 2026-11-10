@@ -129,48 +129,54 @@ function MethodGraph({ steps, active }: { steps: Step[]; active: number }) {
   );
 }
 
-/** The four steps play through on their own; hovering pauses, clicking a step selects it. */
+/** The four steps play through on their own, in a loop. Clicking a step jumps to it. */
 export function MethodStory({ steps }: { steps: Step[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
-  const visible = useInView(ref);
   const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const [visible, setVisible] = useState(false);
 
+  // run only while the section is on screen
   useEffect(() => {
-    if (reduce || paused || !visible) return;
-    const t = setInterval(() => setActive((i) => (i + 1) % steps.length), 2600);
-    return () => clearInterval(t);
-  }, [reduce, paused, visible, steps.length, active]);
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { threshold: 0.15 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // restarts its timer whenever the step changes, so a click gets a full beat before moving on
+  useEffect(() => {
+    if (reduce || !visible) return;
+    const t = setTimeout(() => setActive((i) => (i + 1) % steps.length), 1700);
+    return () => clearTimeout(t);
+  }, [reduce, visible, steps.length, active]);
 
   return (
-    <div
-      ref={ref}
-      className="wrap grid gap-8 py-8 md:py-14 lg:grid-cols-[.85fr_1.15fr] lg:items-center lg:gap-10"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
-    >
-      <ol className="relative">
-        <span className="absolute bottom-8 left-[5px] top-8 w-px bg-[var(--muted)] opacity-40" aria-hidden="true" />
+    <div ref={ref} className="wrap grid gap-8 py-8 md:py-14 lg:grid-cols-[.85fr_1.15fr] lg:items-center lg:gap-12">
+      <ol className="relative space-y-2">
+        {/* rail */}
+        <span className="absolute bottom-10 left-[5px] top-10 w-px bg-[var(--muted)] opacity-40" aria-hidden="true" />
         {steps.map((s, i) => {
           const on = i === active;
           return (
-            <li key={s.n}>
+            <li key={s.n} className="relative pl-8">
+              <span
+                className={`absolute left-0 top-1/2 h-[11px] w-[11px] -translate-y-1/2 rounded-full border-2 transition-all duration-300 ${on ? "border-[#F5861F] bg-[#F5861F] shadow-[0_0_0_5px_rgba(245,134,31,.25)]" : "border-[var(--muted)] bg-[var(--bg)]"}`}
+                aria-hidden="true"
+              />
               <button
                 type="button"
                 onClick={() => setActive(i)}
                 aria-current={on ? "step" : undefined}
-                className={`relative grid w-full grid-cols-[auto_1fr] items-center gap-x-5 rounded-xl border py-4 pl-8 pr-4 text-left transition-all duration-500 sm:grid-cols-[auto_1fr_auto] ${on ? "border-[#F5861F]/50 bg-[var(--xii-soft)]" : "border-transparent opacity-55 hover:opacity-90"}`}
+                className={`grid w-full grid-cols-[2.75rem_1fr] items-center gap-x-4 rounded-xl border px-4 py-3.5 text-left transition-[background-color,border-color,opacity] duration-300 sm:grid-cols-[2.75rem_1fr_10.5rem] ${on ? "border-[#F5861F]/50 bg-[var(--xii-soft)]" : "border-transparent opacity-55 hover:opacity-90"}`}
               >
-                <span className={`absolute left-0 top-1/2 h-[11px] w-[11px] -translate-y-1/2 rounded-full border-2 transition-all duration-500 ${on ? "border-[#F5861F] bg-[#F5861F] shadow-[0_0_0_5px_rgba(245,134,31,.25)]" : "border-[var(--muted)] bg-[var(--bg)]"}`} aria-hidden="true" />
-                <span className={`rounded-md px-2 py-1 font-display text-sm font-bold ${on ? "bg-[#F5861F]/20 text-[var(--blue)]" : "bg-raise"}`}>{s.n}</span>
+                <span className={`rounded-md py-1 text-center font-display text-sm font-bold ${on ? "bg-[#F5861F]/20 text-[var(--blue)]" : "bg-raise"}`}>{s.n}</span>
                 <span>
                   <span className="block font-display text-2xl font-bold tracking-[-0.03em]">{s.title}</span>
                   <span className="mt-0.5 block text-[0.95rem] leading-snug">{s.text}</span>
                 </span>
-                <span className={`math col-span-2 mt-2 border-line text-[0.95rem] sm:col-span-1 sm:mt-0 sm:max-w-40 sm:border-l sm:pl-5 ${on ? "" : "text-muted"}`}>“{s.ask}”</span>
+                <span className={`math col-span-2 mt-2 border-line text-[0.95rem] sm:col-span-1 sm:mt-0 sm:border-l sm:pl-5 ${on ? "" : "text-muted"}`}>“{s.ask}”</span>
               </button>
             </li>
           );

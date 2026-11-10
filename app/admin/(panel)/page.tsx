@@ -4,33 +4,33 @@ import Link from "next/link";
 import { fmtDate, Notice, PageTitle, useCollection } from "@/components/admin/kit";
 
 export default function Overview() {
-  const enquiries = useCollection("enquiries");
   const resources = useCollection("resources");
   const announcements = useCollection("announcements");
-  const error = enquiries.error || resources.error || announcements.error;
+  const gallery = useCollection("gallery");
+  const error = resources.error || announcements.error || gallery.error;
 
   const stats = [
-    { label: "Total enquiries", value: enquiries.items?.length, href: "/admin/enquiries" },
-    { label: "Awaiting a reply", value: enquiries.items?.filter((e) => !e.handled).length, href: "/admin/enquiries" },
-    { label: "Published study resources", value: resources.items?.filter((r) => r.published).length, href: "/admin/resources" },
+    { label: "Notes on the website", value: resources.items?.filter((r) => r.published).length, href: "/admin/resources" },
+    { label: "Notes not yet published", value: resources.items?.filter((r) => !r.published).length, href: "/admin/resources" },
     { label: "Published announcements", value: announcements.items?.filter((a) => a.published).length, href: "/admin/announcements" },
+    { label: "Gallery photographs", value: gallery.items?.length, href: "/admin/gallery" },
   ];
 
   return (
     <>
-      <PageTitle title="Overview" intro="What is new on the website, and the things you do most often." />
+      <PageTitle title="Overview" intro="What is on the website now, and the things you do most often. Enquiries arrive on WhatsApp, not here." />
       {error && <Notice kind="error">{error}</Notice>}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((s) => (
-          <Link key={s.label} href={s.href} className="card card-hover p-5">
+          <Link key={s.label} href={s.href} className="card card-hover border-t-4 border-t-[var(--accent)] p-5">
             <p className="text-sm text-muted">{s.label}</p>
-            <p className="mt-1 font-serif text-5xl">{s.value ?? "–"}</p>
+            <p className="mt-1 font-display text-5xl font-bold tracking-[-0.04em]">{s.value ?? "–"}</p>
           </Link>
         ))}
       </div>
 
-      <h2 className="mb-3 mt-10 font-display text-lg font-bold">Quick actions</h2>
+      <h2 className="bar-title mb-3 mt-10 text-lg">Quick actions</h2>
       <div className="flex flex-wrap gap-2">
         <Link href="/admin/resources" className="btn btn-primary btn-sm">Add study material</Link>
         <Link href="/admin/announcements" className="btn btn-outline btn-sm">Post an announcement</Link>
@@ -40,27 +40,27 @@ export default function Overview() {
 
       <div className="mt-10 grid gap-8 xl:grid-cols-2">
         <section>
-          <h2 className="mb-3 font-display text-lg font-bold">Recent enquiries</h2>
-          {!enquiries.items ? (
+          <h2 className="bar-title mb-3 text-lg">Latest study material</h2>
+          {!resources.items ? (
             <div className="skeleton h-32" />
-          ) : enquiries.items.length === 0 ? (
-            <p className="card p-6 text-muted">No enquiries yet. They appear here as soon as someone submits the form on the Contact page.</p>
+          ) : resources.items.length === 0 ? (
+            <p className="card p-6 text-muted">No notes yet. Add a PDF or import them from Google Drive.</p>
           ) : (
             <ul className="card divide-y divide-line">
-              {enquiries.items.slice(0, 5).map((e) => (
-                <li key={e.id} className="flex items-center justify-between gap-4 p-4">
+              {resources.items.slice(0, 5).map((r) => (
+                <li key={r.id} className="flex items-center justify-between gap-4 p-4">
                   <div className="min-w-0">
-                    <p className="truncate font-medium">{String(e.student)} <span className="text-muted">· Class {String(e.cls)}</span></p>
-                    <p className="text-sm text-muted">{fmtDate(e.createdAt)}</p>
+                    <p className="truncate font-medium">{String(r.title)}</p>
+                    <p className="text-sm text-muted">{r.cls === "JEE" ? "JEE" : `Class ${r.cls}`} · {String(r.chapter || "No chapter")}</p>
                   </div>
-                  {!e.handled && <span className="tag tag-XII shrink-0">New</span>}
+                  <span className={`tag shrink-0 ${r.published ? "tag-XII" : "tag-JEE"}`}>{r.published ? "Published" : "Hidden"}</span>
                 </li>
               ))}
             </ul>
           )}
         </section>
         <section>
-          <h2 className="mb-3 font-display text-lg font-bold">Recent announcements</h2>
+          <h2 className="bar-title mb-3 text-lg">Recent announcements</h2>
           {!announcements.items ? (
             <div className="skeleton h-32" />
           ) : announcements.items.length === 0 ? (

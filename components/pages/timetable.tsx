@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Mail } from "lucide-react";
 import { PrintButton } from "@/components/interactive";
 import { TimetableCard, WeekPlot } from "@/components/timetable";
 import { NavyCTA, PageHero, WaButton } from "@/components/ui";
@@ -58,7 +56,6 @@ export default async function TimetablePage() {
 
       <NavyCTA title={<>Need Help Choosing a Batch? <em className="hi">Contact Us.</em></>}>
         <WaButton href={wa}>Contact on WhatsApp</WaButton>
-        <Link href="/contact#enquiry" className="btn btn-light"><Mail size={17} aria-hidden="true" /> Send Enquiry</Link>
       </NavyCTA>
     </>
   );

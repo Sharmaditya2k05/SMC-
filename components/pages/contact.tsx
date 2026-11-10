@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { ArrowUpRight, MapPin, Phone } from "lucide-react";
-import { ClassTimeCard, LocationCard, MapEmbed } from "@/components/blocks";
-import { EnquiryForm } from "@/components/enquiry-form";
+import { ClassTimeCard, LocationCard, MapEmbed, shortTime } from "@/components/blocks";
 import { PageHero, Placeholder, WaButton, WhatsAppIcon } from "@/components/ui";
 import { getSettings, getTimetable } from "@/lib/content";
 import { normaliseIndianMobile, waLink, WA_MESSAGES } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Location & Contact",
-  description: "Contact Siddhu Sir at Siddhu Mathematics Classes on WhatsApp, send an enquiry for Class XI or XII Mathematics, and get directions to the classroom.",
+  description: "Contact Siddhu Sir at Siddhu Mathematics Classes on WhatsApp about Class XI or XII Mathematics, and get directions to the classroom.",
   alternates: { canonical: "/contact" },
 };
 
@@ -72,9 +71,34 @@ export default async function Contact() {
             )}
           </div>
 
-          <div id="enquiry" className="card scroll-mt-28 p-6 md:p-8">
-            <h2 className="bar-title mb-5 text-2xl">Send an enquiry</h2>
-            <EnquiryForm timetable={timetable} whatsapp={settings.whatsapp} teacher={settings.teacherShortName || "The teacher"} />
+          <div className="card relative overflow-hidden p-6 md:p-9">
+            <h2 className="bar-title text-2xl">Message {sir} on WhatsApp</h2>
+            <p className="mt-3 max-w-lg pl-4 text-muted">
+              Choose the class and WhatsApp opens with your message ready to send. Add the student&apos;s name and school, and ask anything about batches, the syllabus or admission.
+            </p>
+            <div className="mt-7 grid gap-4 sm:grid-cols-2">
+              {(["XI", "XII"] as const).map((cls) => (
+                <div key={cls} className="rounded-xl border border-line p-5">
+                  <p><span className={`tag tag-${cls}`}>Class {cls}</span></p>
+                  <p className="mt-3 font-display text-xl font-bold tracking-[-0.03em]">Class {cls} Mathematics</p>
+                  <ul className="mt-2 space-y-1 text-sm text-muted">
+                    {timetable.slots.filter((x) => x.cls === cls).map((x) => (
+                      <li key={x.id} className="flex justify-between gap-3"><span>{x.days.join(", ")}</span><span className="font-semibold tabular-nums text-ink">{shortTime(x)}</span></li>
+                    ))}
+                  </ul>
+                  <WaButton href={waLink(settings.whatsapp, WA_MESSAGES[cls])} className="mt-5 w-full">Enquire for Class {cls}</WaButton>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 flex flex-col gap-4 rounded-xl bg-[var(--xii-soft)] p-5 sm:flex-row sm:items-center sm:justify-between">
+              <p>
+                <span className="block font-display font-bold">Prefer to call?</span>
+                <span className="text-muted">{settings.phone ? "Phone and WhatsApp are on the same number." : "Use WhatsApp for the quickest reply."}</span>
+              </p>
+              {settings.phone && (
+                <a href={`tel:${settings.phone.replace(/\s/g, "")}`} className="btn btn-outline shrink-0"><Phone size={17} aria-hidden="true" /> {settings.phone}</a>
+              )}
+            </div>
           </div>
         </div>
       </section>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, BookOpen, CalendarDays, Check, Info, Mail, Target } from "lucide-react";
+import { ArrowRight, BookOpen, CalendarDays, Check, Info, Target } from "lucide-react";
 import { shortTime } from "@/components/blocks";
 import { MiniGraph } from "@/components/math-art";
 import { ResourceRow } from "@/components/resources";
@@ -122,7 +122,6 @@ export default async function Courses() {
                     </div>
                     <div className="flex flex-wrap gap-3 [&>*]:flex-1 [&>*]:whitespace-nowrap">
                       <WaButton href={waLink(settings.whatsapp, WA_MESSAGES[cls])}>Enquire on WhatsApp</WaButton>
-                      <Link href="/contact#enquiry" className={`btn ${dark ? "btn-onnavy" : "btn-outline"}`}><Mail size={17} aria-hidden="true" /> Send Enquiry</Link>
                     </div>
                   </div>
                 </div>
