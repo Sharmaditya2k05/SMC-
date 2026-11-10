@@ -20,10 +20,9 @@ const GROUPS: { title: string; note?: string; fields: Field[] }[] = [
     title: "About the teacher",
     note: "Anything left empty shows as “To be updated” on the About page.",
     fields: [
-      { name: "teacherName", label: "Teacher's name", type: "text" },
+      { name: "teacherName", label: "Teacher's full name (optional – shown in brackets after the name students use)", type: "text" },
       { name: "teacherShortName", label: "Name students use", type: "text", placeholder: "Siddhu Sir", help: "Used in buttons and sentences across the website." },
       { name: "portraitUrl", label: "Teacher photograph", type: "file", accept: "image/jpeg,image/png,image/webp", help: "A portrait (taller than wide) works best. Shown on the home and About pages." },
-      { name: "qualifications", label: "Educational qualifications", type: "textarea" },
       { name: "experience", label: "Teaching experience", type: "text" },
       { name: "expertise", label: "Areas of expertise", type: "text" },
       { name: "approach", label: "Approach towards students", type: "textarea" },

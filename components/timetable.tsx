@@ -1,62 +1,57 @@
 import Link from "next/link";
+import { CalendarDays, Clock } from "lucide-react";
 import { DAYS, DAY_NAMES } from "@/lib/defaults";
 import { slotDays, slotTime, time12, waLink, WA_MESSAGES } from "@/lib/format";
 import type { Timetable } from "@/lib/types";
 import { WaButton } from "./ui";
 
-const fill = { XI: "bg-xi text-white dark:text-[#101C35]", XII: "bg-[var(--gold)] text-[#101C35]" } as const;
+const pill = {
+  XI: "bg-[var(--xi)] text-[var(--xi-fg)]",
+  XII: "bg-[var(--xii)] text-white",
+} as const;
 
-/**
- * The week as a plot: days across, time bands down. The two classes swap
- * slots mid-week, which this view makes obvious at a glance.
- */
+/** Weekly class schedule: days across, time bands down, one pill per class. */
 export function WeekPlot({ timetable }: { timetable: Timetable }) {
   const bands = [...new Map(timetable.slots.map((s) => [`${s.start}-${s.end}`, s])).values()].sort((a, b) => a.start.localeCompare(b.start));
   return (
     <div className="card overflow-hidden">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3 md:px-6">
-        <p className="font-display text-sm font-bold">Weekly schedule <span className="font-sans font-normal text-muted">· Monday to Saturday · IST</span></p>
-        <p className="flex items-center gap-4 text-sm">
-          <span className="flex items-center gap-2"><i className="h-3 w-3 rounded-sm bg-xi" aria-hidden="true" /> Class XI</span>
-          <span className="flex items-center gap-2"><i className="h-3 w-3 rounded-sm bg-[var(--gold)]" aria-hidden="true" /> Class XII</span>
-        </p>
-      </div>
       <table className="w-full table-fixed border-collapse text-center">
         <caption className="sr-only">Weekly batch schedule for Class XI and Class XII, Indian Standard Time</caption>
         <thead>
-          <tr>
-            <th scope="col" className="w-[4.6rem] border-b border-r border-line p-2 text-left text-xs font-semibold text-muted md:w-44 md:px-6">
-              Time
-            </th>
+          <tr className="bg-raise">
+            <th scope="col" className="w-[4.75rem] border-b border-line p-2 font-display text-sm font-bold md:w-48 md:py-3">Time</th>
             {DAYS.map((d) => (
-              <th key={d} scope="col" className="border-b border-line p-2 font-display text-sm font-bold md:py-3">
+              <th key={d} scope="col" className="border-b border-l border-line p-2 font-display text-sm font-bold md:py-3">
                 <abbr title={DAY_NAMES[d]} className="no-underline">
-                  <span className="md:hidden">{d[0]}</span>
-                  <span className="hidden md:inline">{d}</span>
+                  <span className="lg:hidden">{d[0]}<span className="hidden sm:inline">{d.slice(1)}</span></span>
+                  <span className="hidden lg:inline">{DAY_NAMES[d]}</span>
                 </abbr>
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="grid-paper">
+        <tbody>
           {bands.map((band) => (
             <tr key={band.start}>
-              <th scope="row" className="border-r border-line bg-surface p-2 text-left align-middle text-[0.7rem] font-medium leading-tight text-muted md:px-6 md:text-sm">
-                {time12(band.start)}
-                <span className="block md:inline"> – {time12(band.end)}</span>
+              <th scope="row" className="border-b border-line p-2 text-left font-display text-[0.68rem] font-semibold leading-tight last:border-b-0 md:px-5 md:text-sm">
+                <span className="flex items-center gap-2.5">
+                  <Clock size={16} className="hidden shrink-0 md:block" aria-hidden="true" />
+                  <span className="tabular-nums">
+                    {time12(band.start).replace(/ [AP]M$/, "")} –<span className="block md:inline"> {time12(band.end)}</span>
+                  </span>
+                </span>
               </th>
               {DAYS.map((d) => {
                 const here = timetable.slots.filter((s) => s.start === band.start && s.end === band.end && s.days.includes(d));
                 return (
-                  <td key={d} className="h-20 p-1 md:h-24 md:p-1.5">
-                    <div className="flex h-full flex-col gap-1">
+                  <td key={d} className="border-b border-l border-line p-1 md:p-2">
+                    <div className="flex flex-col gap-1">
                       {here.map((s) => (
-                        <div key={s.id} className={`grid flex-1 place-items-center rounded-[5px] font-serif text-lg md:text-2xl ${fill[s.cls]}`}>
-                          <span>
-                            <span className="sr-only">Class </span>
-                            {s.cls}
-                          </span>
-                        </div>
+                        <span key={s.id} className={`rounded-md py-2 font-display text-xs font-bold md:text-sm ${pill[s.cls]}`}>
+                          <span className="hidden lg:inline">Class </span>
+                          <span className="sr-only lg:hidden">Class </span>
+                          {s.cls}
+                        </span>
                       ))}
                     </div>
                   </td>
@@ -71,30 +66,32 @@ export function WeekPlot({ timetable }: { timetable: Timetable }) {
   );
 }
 
+/** Large per-class timetable card with a coloured header bar. */
 export function TimetableCard({ cls, timetable, whatsapp, actions = true }: { cls: "XI" | "XII"; timetable: Timetable; whatsapp: string; actions?: boolean }) {
   const slots = timetable.slots.filter((s) => s.cls === cls);
   return (
     <article className="card relative overflow-hidden">
-      <div className={`h-1.5 ${cls === "XI" ? "bg-xi" : "bg-[var(--gold)]"}`} />
+      <div className={`flex items-center justify-between gap-4 px-6 py-4 md:px-8 ${pill[cls]}`}>
+        <h3 className="font-display text-xl font-bold">Class {cls} Mathematics</h3>
+        <span className="font-display text-3xl font-extrabold leading-none opacity-90" aria-hidden="true">{cls}</span>
+      </div>
       <div className="p-6 md:p-8">
-        <div className="flex items-end justify-between gap-4">
-          <h3 className="font-display text-xl font-bold">
-            Class {cls} <span className="block text-base font-medium text-muted">Mathematics</span>
-          </h3>
-          <span className={`font-serif text-6xl leading-none ${cls === "XI" ? "text-xi" : "text-xii"}`} aria-hidden="true">{cls}</span>
-        </div>
-        <table className="mt-6 w-full text-left">
+        <table className="w-full text-left">
           <thead>
             <tr className="text-sm text-muted">
-              <th scope="col" className="border-b border-line py-2 font-medium">Days</th>
-              <th scope="col" className="border-b border-line py-2 font-medium">Timing (IST)</th>
+              <th scope="col" className="border-b border-line pb-2 font-medium">Days</th>
+              <th scope="col" className="border-b border-line pb-2 font-medium">Timing (IST)</th>
             </tr>
           </thead>
           <tbody>
             {slots.map((s) => (
               <tr key={s.id}>
-                <td className="border-b border-line py-3.5 pr-3 align-top">{slotDays(s)}</td>
-                <td className="whitespace-nowrap border-b border-line py-3.5 align-top font-display font-bold tabular-nums">{slotTime(s)}</td>
+                <td className="border-b border-line py-3.5 pr-3 align-middle">
+                  <span className="flex items-center gap-2.5"><CalendarDays size={17} className="shrink-0 text-accent" aria-hidden="true" /> {slotDays(s)}</span>
+                </td>
+                <td className="border-b border-line py-3.5 align-middle">
+                  <span className="inline-block whitespace-nowrap rounded-md bg-[var(--xii-soft)] px-2.5 py-1 font-display font-bold tabular-nums">{slotTime(s)}</span>
+                </td>
               </tr>
             ))}
             {!slots.length && (

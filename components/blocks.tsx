@@ -1,27 +1,42 @@
 import Link from "next/link";
-import { CalendarDays, MapPin, Navigation } from "lucide-react";
-import { slotDays, slotTime, waLink, WA_MESSAGES } from "@/lib/format";
-import type { Settings, Timetable } from "@/lib/types";
-import { ConstructionArt } from "./math-art";
-import { WaButton } from "./ui";
+import { BookOpen, CalendarDays, MapPin, Navigation } from "lucide-react";
+import { time12, waLink, WA_MESSAGES } from "@/lib/format";
+import type { Settings, Slot, Timetable } from "@/lib/types";
+import { MiniGraph } from "./math-art";
+import { BulbMark, WaButton } from "./ui";
 
-/** Teacher portrait in the brand's architectural frame. Falls back to a geometric plate until a photo is uploaded. */
-export function Portrait({ settings, className = "", priority = false }: { settings: Settings; className?: string; priority?: boolean }) {
+/** "Mon – Wed" for consecutive days, otherwise "Mon, Wed, Fri". */
+const ORDER = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+export function dayRange(s: Slot, long = false) {
+  const idx = s.days.map((d) => ORDER.indexOf(d)).sort((a, b) => a - b);
+  const consecutive = idx.length > 2 && idx.every((v, i) => i === 0 || v === idx[i - 1] + 1);
+  if (long) return s.days.join(", ");
+  return consecutive ? `${ORDER[idx[0]]} – ${ORDER[idx[idx.length - 1]]}` : s.days.join(", ");
+}
+export const shortTime = (s: Slot) => `${time12(s.start).replace(/ [AP]M$/, "")} – ${time12(s.end)}`;
+
+/**
+ * Teacher portrait. The default artwork (public/brand/hero.webp) already includes
+ * the orbit ring and equations, so it is shown as it is in a soft rounded frame.
+ */
+export function Portrait({ settings, className = "", priority = false }: { settings: Settings; className?: string; priority?: boolean; decorated?: boolean }) {
+  const name = [settings.teacherShortName, settings.teacherName && `(${settings.teacherName})`].filter(Boolean).join(" ");
   return (
     <div className={`relative ${className}`}>
-      <div className="frame absolute -right-3 -top-3 h-full w-full border border-[var(--gold)]" aria-hidden="true" />
-      <div className="frame relative aspect-[4/5] overflow-hidden bg-[#101C35] shadow-[0_30px_60px_-30px_rgba(16,28,53,.55)]">
+      <div className="overflow-hidden rounded-[2rem] bg-[#FBF1E6] shadow-[0_30px_60px_-36px_rgba(22,23,27,.5)] ring-1 ring-black/5">
         {settings.portraitUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={settings.portraitUrl}
-            alt={settings.teacherName ? `${settings.teacherName}${settings.teacherShortName ? ` (${settings.teacherShortName})` : ""}, Mathematics teacher at Siddhu Mathematics Classes` : "The Mathematics teacher at Siddhu Mathematics Classes"}
-            className="h-full w-full object-cover object-top"
+            alt={name ? `${name}, Mathematics teacher at Siddhu Mathematics Classes` : "The Mathematics teacher at Siddhu Mathematics Classes"}
+            width={1195}
+            height={1316}
+            className="block h-auto w-full"
             loading={priority ? "eager" : "lazy"}
             fetchPriority={priority ? "high" : "auto"}
           />
         ) : (
-          <ConstructionArt />
+          <div className="grid aspect-[10/11] place-items-center bg-[#16171B] text-white"><BulbMark size={120} /></div>
         )}
       </div>
     </div>
@@ -37,7 +52,7 @@ export function MapEmbed({ settings, className = "" }: { settings: Settings; cla
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
         allowFullScreen
-        className="h-full min-h-[320px] w-full border-0 dark:[filter:invert(.92)_hue-rotate(180deg)_saturate(.7)]"
+        className="h-full min-h-[300px] w-full border-0 dark:[filter:invert(.92)_hue-rotate(180deg)_saturate(.7)]"
       />
     </div>
   );
@@ -46,83 +61,90 @@ export function MapEmbed({ settings, className = "" }: { settings: Settings; cla
 export function LocationCard({ settings }: { settings: Settings }) {
   return (
     <div className="card flex flex-col gap-5 p-6 md:p-8">
-      <MapPin className="text-goldink" aria-hidden="true" />
-      <div>
-        <h3 className="font-display text-xl font-bold">{settings.brandName}</h3>
-        <p className="mt-2 text-muted">
-          {settings.address || "The full classroom address will be added here. Until then, the map pin and directions link lead to the exact location."}
-        </p>
+      <div className="flex gap-4">
+        <MapPin size={30} className="mt-0.5 shrink-0 fill-accent text-surface" aria-hidden="true" />
+        <div>
+          <h3 className="font-display text-xl font-bold">{settings.brandName}</h3>
+          <p className="mt-1.5 text-muted">
+            {settings.address || "The full classroom address will be added here."}
+            <span className="mt-1 block text-sm">The map pin and directions lead to the exact classroom.</span>
+          </p>
+        </div>
       </div>
       <div className="mt-auto flex flex-wrap gap-3">
-        <a href={settings.mapsUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+        <a href={settings.mapsUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary flex-1">
           <Navigation size={17} aria-hidden="true" /> Get Directions
         </a>
-        <a href={settings.mapsUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
-          Open in Google Maps
+        <a href={settings.mapsUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline flex-1">
+          <MapPin size={17} className="text-accent" aria-hidden="true" /> Open in Google Maps
         </a>
       </div>
     </div>
   );
 }
 
-const COURSE_COPY = {
-  XI: "Develop conceptual clarity and a strong foundation for higher-level mathematics.",
-  XII: "Master the concepts of Class XII and strengthen your problem-solving, one chapter at a time.",
-};
-
-export function CourseCard({ cls, timetable, whatsapp }: { cls: "XI" | "XII"; timetable: Timetable; whatsapp: string }) {
-  const slots = timetable.slots.filter((s) => s.cls === cls);
-  const navy = cls === "XII";
+/** Timing rows: "MTW : 03:30 – 05:00 PM" */
+export function SlotRows({ slots, tone = "light", pill = false }: { slots: Slot[]; tone?: "light" | "dark"; pill?: boolean }) {
   return (
-    <article className={`relative overflow-hidden rounded-[10px] border p-7 md:p-10 ${navy ? "border-transparent bg-deep text-ivory" : "border-line bg-surface"}`}>
-      <span aria-hidden="true" className={`pointer-events-none absolute -right-2 -top-8 font-serif text-[11rem] leading-none md:text-[14rem] ${navy ? "text-white/[0.06]" : "text-[var(--xi-soft)]"}`}>
-        {cls}
-      </span>
-      <div className="relative">
-        <p className={`font-display text-sm font-bold ${navy ? "text-gold" : "text-blue"}`}>Class {cls}</p>
-        <h3 className="mt-1 font-display text-3xl font-bold md:text-4xl">Mathematics</h3>
-        <p className={`mt-4 max-w-md ${navy ? "text-ivory/75" : "text-muted"}`}>{COURSE_COPY[cls]}</p>
-        <ul className={`mt-7 divide-y border-y ${navy ? "divide-white/15 border-white/15" : "divide-line border-line"}`}>
-          {slots.map((s) => (
-            <li key={s.id} className="flex flex-col gap-1 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-              <span className="flex items-center gap-2.5 text-[0.95rem]">
-                <CalendarDays size={16} className={navy ? "text-gold" : "text-goldink"} aria-hidden="true" /> {slotDays(s)}
-              </span>
-              <span className="font-display font-bold tabular-nums">{slotTime(s)}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <Link href="/timetable" className={`btn ${navy ? "btn-gold" : "btn-primary"}`}>View Timetable</Link>
-          <WaButton href={waLink(whatsapp, WA_MESSAGES[cls])}>Enquire on WhatsApp</WaButton>
+    <ul className="space-y-2">
+      {slots.map((s) => (
+        <li key={s.id} className="flex items-center gap-3 text-[0.95rem]">
+          <CalendarDays size={17} className="shrink-0" aria-hidden="true" />
+          <span className="w-[5.5rem] shrink-0 whitespace-nowrap font-display font-semibold">{dayRange(s)}</span>
+          <span className={`whitespace-nowrap font-display font-semibold tabular-nums ${pill ? `rounded-md px-2.5 py-1 ${tone === "dark" ? "bg-[#F4DCC7] text-[#16171B]" : "bg-[#F9E4D2] text-[#16171B]"}` : ""}`}>{shortTime(s)}</span>
+        </li>
+      ))}
+      {!slots.length && <li className="text-muted">Batch timings will be announced.</li>}
+    </ul>
+  );
+}
+
+const COURSE_COPY = {
+  XI: { text: "A strong foundation for advanced learning.", graph: "parabola", label: <>y = x²</> },
+  XII: { text: "Master the concepts and strengthen problem-solving.", graph: "cos", label: <>y = cos x</> },
+} as const;
+
+/** Home page course card: Class XI on white, Class XII on charcoal. */
+export function CourseCard({ cls, timetable, whatsapp }: { cls: "XI" | "XII"; timetable: Timetable; whatsapp: string }) {
+  const dark = cls === "XII";
+  const c = COURSE_COPY[cls];
+  return (
+    <article className={`relative overflow-hidden rounded-xl border p-6 md:p-7 ${dark ? "border-transparent bg-deep text-white" : "border-line bg-surface shadow-[var(--shadow)]"}`}>
+      <div className="grid gap-4 sm:grid-cols-[1fr_auto]">
+        <div>
+          <h3 className="bar-title text-2xl md:text-[1.7rem]">Class {cls} Mathematics</h3>
+          <p className={`mt-2 pl-4 ${dark ? "text-white/75" : "text-muted"}`}>{c.text}</p>
+          <div className="mt-5 pl-4">
+            <SlotRows slots={timetable.slots.filter((s) => s.cls === cls)} tone={dark ? "dark" : "light"} />
+          </div>
         </div>
+        <MiniGraph kind={c.graph} label={c.label} tone={dark ? "dark" : "light"} className="hidden h-28 w-48 sm:block" />
+      </div>
+      <div className="mt-6 flex flex-wrap gap-3 pl-4">
+        <Link href="/timetable" className={`btn ${dark ? "btn-onnavy" : "btn-outline"}`}>
+          <CalendarDays size={17} aria-hidden="true" /> View Timetable
+        </Link>
+        <WaButton href={waLink(whatsapp, WA_MESSAGES[cls])}>Enquire on WhatsApp</WaButton>
       </div>
     </article>
   );
 }
 
-/** (a + b)² shown as an area – the idea the whole site is about, in one figure. */
-export function SquareIdentity() {
+/** Compact class card with a coloured header bar (Contact page). */
+export function ClassTimeCard({ cls, timetable }: { cls: "XI" | "XII"; timetable: Timetable }) {
   return (
-    <figure className="card grid-paper p-6 md:p-8">
-      <svg viewBox="0 0 320 250" className="mx-auto w-full max-w-sm" role="img" aria-label="A square of side a plus b divided into a squared, two rectangles of area a b, and b squared">
-        <g stroke="var(--ink)" strokeWidth="1.25">
-          <rect x="50" y="20" width="130" height="130" fill="var(--xi-soft)" />
-          <rect x="180" y="20" width="70" height="130" fill="var(--xii-soft)" />
-          <rect x="50" y="150" width="130" height="70" fill="var(--xii-soft)" />
-          <rect x="180" y="150" width="70" height="70" fill="var(--xi-soft)" />
-        </g>
-        <g fontFamily="var(--font-serif)" fontStyle="italic" fontSize="22" fill="var(--ink)" textAnchor="middle">
-          <text x="115" y="92">a²</text><text x="215" y="92">ab</text><text x="115" y="192">ab</text><text x="215" y="192">b²</text>
-        </g>
-        <g fontFamily="var(--font-serif)" fontStyle="italic" fontSize="17" fill="var(--gold-ink)" textAnchor="middle">
-          <text x="115" y="242">a</text><text x="215" y="242">b</text><text x="34" y="90">a</text><text x="34" y="190">b</text>
-        </g>
-      </svg>
-      <figcaption className="mt-5 text-center">
-        <span className="font-serif text-2xl italic">(a + b)² = a² + 2ab + b²</span>
-        <span className="mt-2 block text-sm text-muted">Memorised, it is a formula. Drawn, it is obvious – and hard to forget.</span>
-      </figcaption>
-    </figure>
+    <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-[var(--shadow)]">
+      <p className={`flex items-center gap-2.5 px-4 py-2.5 font-display font-bold ${cls === "XI" ? "bg-[var(--xi)] text-[var(--xi-fg)]" : "bg-[var(--xii)] text-white"}`}>
+        <BookOpen size={18} aria-hidden="true" /> Class {cls}
+      </p>
+      <ul className="space-y-2 p-3">
+        {timetable.slots.filter((s) => s.cls === cls).map((s) => (
+          <li key={s.id} className="flex items-center justify-between gap-2 text-sm">
+            <span className="flex items-center gap-2 font-display font-semibold"><CalendarDays size={15} aria-hidden="true" /> {dayRange(s)}</span>
+            <span className="rounded-md bg-[var(--xii-soft)] px-2 py-1 font-display font-semibold tabular-nums">{shortTime(s)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

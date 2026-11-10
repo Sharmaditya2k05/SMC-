@@ -25,8 +25,8 @@ export default function Terms() {
             <h2>Enquiries and admission</h2>
             <p>Sending an enquiry does not confirm a seat. Admission, fees and batch allotment are discussed directly with Siddhu Sir.</p>
           </div>
-          <div>
-            <h2>No guarantee of results</h2>
+          <div id="disclaimer" className="scroll-mt-28">
+            <h2>Disclaimer – no guarantee of results</h2>
             <p>Classes are designed to build understanding and confidence. Examination results depend on each student&apos;s own effort and cannot be guaranteed.</p>
           </div>
           <div>

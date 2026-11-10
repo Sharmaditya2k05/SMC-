@@ -7,22 +7,23 @@ import type { Settings, Timetable } from "./types";
  */
 export const DEFAULT_SETTINGS: Settings = {
   brandName: "Siddhu Mathematics Classes",
-  tagline: "Mathematics Made Simple. Concepts Made Strong.",
-  teacherName: "Deepak Siddhu",
+  tagline: "Focused Mathematics Coaching for Class XI & XII.",
+  teacherName: "",
   teacherShortName: "Siddhu Sir",
   qualifications: "",
-  experience: "",
+  experience: "10+ years",
   expertise: "Mathematics for Classes XI and XII",
   approach: "",
   bio:
     "Mathematics is not simply about remembering formulas or solving equations. It is about understanding patterns, developing logical thinking and learning how to approach problems with confidence.\n\nAt Siddhu Mathematics Classes, the focus is on making mathematical concepts approachable, building strong fundamentals and encouraging students to think independently.",
   philosophy: "",
-  studentMessage: "",
-  portraitUrl: "/brand/teacher.jpg",
-  logoUrl: "/brand/smc-mark.png",
+  studentMessage:
+    "Be curious, ask questions, and never hesitate to go a step deeper. Mathematics can be truly enjoyable when you focus on understanding rather than just getting the right answer.",
+  portraitUrl: "/brand/hero.webp",
+  logoUrl: "",
   phone: "+91 99112 85808",
   whatsapp: "9911285808",
-  address: "",
+  address: "Ghaziabad, Uttar Pradesh",
   mapsUrl: "https://maps.app.goo.gl/GfRVqvpeP3Zei4M48",
   mapsEmbedUrl:
     "https://www.google.com/maps?q=Siddhu+Mathematics+Class&ll=28.6703477,77.4565317&z=16&output=embed",

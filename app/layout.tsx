@@ -1,14 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Serif_Display, Inter, Manrope } from "next/font/google";
+import { Inter, Playfair_Display, Sora } from "next/font/google";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"], display: "swap" });
+const sora = Sora({ variable: "--font-sora", subsets: ["latin"], display: "swap" });
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
-const dmSerif = DM_Serif_Display({ variable: "--font-dmserif", weight: "400", style: ["normal", "italic"], subsets: ["latin"], display: "swap" });
+const playfair = Playfair_Display({ variable: "--font-playfair", style: ["normal", "italic"], subsets: ["latin"], display: "swap" });
 
 const description =
-  "Siddhu Mathematics Classes (S.M.C) – concept-focused Mathematics classes for Class XI and Class XII by Deepak Siddhu (Siddhu Sir), with structured batches and study material.";
+  "Siddhu Mathematics Classes (S.M.C) – concept-focused Mathematics classes for Class XI and Class XII by Siddhu Sir, with structured batches and study material.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   applicationName: "Siddhu Mathematics Classes",
   keywords: [
     "Siddhu Mathematics Classes", "S.M.C", "Mathematics classes for Class XI", "Mathematics classes for Class XII",
-    "Class 11 Maths coaching", "Class 12 Maths coaching", "Mathematics teacher", "Deepak Siddhu", "Siddhu Sir",
+    "Class 11 Maths coaching", "Class 12 Maths coaching", "Mathematics teacher", "Siddhu Sir",
   ],
   openGraph: {
     type: "website",
@@ -34,8 +34,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F8F6F0" },
-    { media: "(prefers-color-scheme: dark)", color: "#101C35" },
+    { media: "(prefers-color-scheme: light)", color: "#FBF6F3" },
+    { media: "(prefers-color-scheme: dark)", color: "#16171B" },
   ],
 };
 
@@ -44,7 +44,7 @@ const themeScript = `try{var t=localStorage.getItem("smc-theme");if(t==="dark")d
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" data-theme="light" suppressHydrationWarning className={`${manrope.variable} ${inter.variable} ${dmSerif.variable} antialiased`}>
+    <html lang="en-IN" data-theme="light" suppressHydrationWarning className={`${sora.variable} ${inter.variable} ${playfair.variable} antialiased`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

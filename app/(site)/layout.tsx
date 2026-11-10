@@ -36,7 +36,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <Header settings={{ logoUrl: settings.logoUrl, brandName: settings.brandName }} wa={wa} mapsUrl={settings.mapsUrl} />
       <main id="main" className="flex-1">{children}</main>
       <Footer settings={settings} year={year} />
-      <FloatingDock wa={wa} mapsUrl={settings.mapsUrl} teacher={settings.teacherShortName || "Teacher"} />
+      <FloatingDock wa={wa} teacher={settings.teacherShortName || "Teacher"} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </Motion>
   );
