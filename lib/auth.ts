@@ -1,4 +1,4 @@
-import { createHmac, scryptSync, timingSafeEqual } from "node:crypto";
+import { createHmac, timingSafeEqual } from "node:crypto";
 
 export const SESSION_COOKIE = "smc_admin";
 const MAX_AGE = 60 * 60 * 24 * 7; // 7 days
@@ -13,17 +13,6 @@ function safeEqual(a: string, b: string) {
   const x = Buffer.from(a);
   const y = Buffer.from(b);
   return x.length === y.length && timingSafeEqual(x, y);
-}
-
-/** ADMIN_PASSWORD_HASH is "saltHex:scryptHex" (see scripts/hash-password.mjs). */
-export function verifyCredentials(username: string, password: string) {
-  if (!authConfigured()) return false;
-  const [saltHex, hashHex] = (process.env.ADMIN_PASSWORD_HASH ?? "").split(":");
-  if (!saltHex || !hashHex) return false;
-  const expected = Buffer.from(hashHex, "hex");
-  const actual = scryptSync(password, Buffer.from(saltHex, "hex"), expected.length);
-  const userOk = safeEqual(username.trim().toLowerCase(), (process.env.ADMIN_USERNAME ?? "").trim().toLowerCase());
-  return timingSafeEqual(actual, expected) && userOk;
 }
 
 const sign = (payload: string) =>

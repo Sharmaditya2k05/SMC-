@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CalendarDays, Target, User, Users } from "lucide-react";
-import { Portrait } from "@/components/blocks";
+import { NamePlate, Portrait } from "@/components/blocks";
 import { Reveal } from "@/components/motion";
 import { Placeholder } from "@/components/ui";
 import { getSettings } from "@/lib/content";
@@ -35,13 +35,7 @@ export default async function About() {
           {/* portrait stays pinned while the story scrolls */}
           <div className="relative lg:sticky lg:top-28 lg:h-fit">
             <Portrait settings={s} priority className="mx-auto w-full max-w-[19rem] sm:max-w-[26rem]" />
-            {fullName && (
-              <div className="card relative z-10 mx-auto -mt-8 w-fit px-7 py-4 text-center">
-                <p className="font-display text-2xl font-bold tracking-[-0.03em]">{s.teacherShortName || s.teacherName}</p>
-                {s.teacherShortName && s.teacherName && <p className="text-muted">({s.teacherName})</p>}
-                <p className="mt-1.5 font-display text-[0.7rem] font-bold tracking-[0.18em]">MATHEMATICS EDUCATOR</p>
-              </div>
-            )}
+            <NamePlate settings={s} className="-mt-9" />
           </div>
 
           <div className="space-y-9 md:space-y-12">

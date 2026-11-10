@@ -1,6 +1,7 @@
 import {
-  authConfigured, clientKey, cookieHeader, createSession, sessionFromRequest, throttled, verifyCredentials,
+  authConfigured, clientKey, cookieHeader, createSession, sessionFromRequest, throttled,
 } from "@/lib/auth";
+import { checkLogin } from "@/lib/auth-store";
 
 /** GET: am I signed in?  POST: sign in.  DELETE: sign out. */
 export async function GET(req: Request) {
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
     return Response.json({ error: "Too many attempts. Try again in 10 minutes." }, { status: 429 });
 
   const { username = "", password = "" } = await req.json().catch(() => ({}));
-  if (!verifyCredentials(String(username), String(password)))
+  if (!(await checkLogin(String(username), String(password))))
     return Response.json({ error: "Incorrect username or password." }, { status: 401 });
 
   const s = createSession();

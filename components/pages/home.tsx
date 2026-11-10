@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Check, FileText } from "lucide-react";
-import { CourseCard, Portrait } from "@/components/blocks";
+import { CourseCard, NamePlate, Portrait } from "@/components/blocks";
 import { MiniGraph, SquareIdentity } from "@/components/math-art";
 import { Reveal, Rise } from "@/components/motion";
 import { Chapter } from "@/components/story";
@@ -62,12 +62,7 @@ export default async function Home() {
 
           <Rise delay={0.2} className="relative mx-auto w-full max-w-[19rem] sm:max-w-[27rem] lg:max-w-[30rem]">
             <Portrait settings={settings} priority />
-            {(sir || settings.teacherName) && (
-              <div className="card relative z-10 mx-auto -mt-7 w-fit px-6 py-2.5 text-center">
-                <p className="font-display text-lg font-bold leading-tight">{sir || settings.teacherName}</p>
-                {sir && settings.teacherName && <p className="text-sm text-muted">({settings.teacherName})</p>}
-              </div>
-            )}
+            <NamePlate settings={settings} className="-mt-9" />
           </Rise>
         </div>
       </Chapter>

@@ -43,6 +43,26 @@ export function Portrait({ settings, className = "", priority = false }: { setti
   );
 }
 
+/**
+ * The "SIDDHU SIR" nameplate artwork that sits under the portrait. The artwork
+ * has the name drawn into it, so any other name falls back to a plain card.
+ */
+export function NamePlate({ settings, className = "" }: { settings: Settings; className?: string }) {
+  const name = settings.teacherShortName || settings.teacherName;
+  if (!name) return null;
+  if (name.trim().toLowerCase() === "siddhu sir") {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="/brand/nameplate.webp" alt="Siddhu Sir" width={1000} height={346} className={`relative z-10 mx-auto block h-auto w-[82%] max-w-[22rem] ${className}`} />
+    );
+  }
+  return (
+    <div className={`card relative z-10 mx-auto w-fit px-6 py-2.5 text-center ${className}`}>
+      <p className="font-display text-lg font-bold leading-tight">{name}</p>
+    </div>
+  );
+}
+
 export function MapEmbed({ settings, className = "" }: { settings: Settings; className?: string }) {
   return (
     <div className={`card overflow-hidden ${className}`}>
