@@ -64,7 +64,7 @@ export default async function Home() {
               <Portrait settings={settings} priority className="absolute left-[14%] top-[9%] w-[62%]" />
               <div className="card absolute bottom-[5%] right-0 max-w-[13.5rem] border-l-4 border-l-[var(--gold)] p-4 shadow-[0_20px_40px_-20px_rgba(16,28,53,.4)] md:right-[2%]">
                 <p className="font-display font-bold">Classes XI &amp; XII</p>
-                <p className="mt-0.5 text-sm text-muted">Focused Mathematics Learning</p>
+                <p className="mt-0.5 text-sm text-muted">Focused Mathematics Learning{settings.teacherShortName ? ` with ${settings.teacherShortName}` : ""}</p>
               </div>
             </div>
           </Rise>
@@ -165,9 +165,14 @@ export default async function Home() {
           <Portrait settings={settings} className="mx-auto w-full max-w-[18rem] md:max-w-none" />
           <div>
             <h2 className="h2">Meet Your Mathematics Teacher.</h2>
-            {settings.teacherName && <p className="note mt-3 text-2xl">{settings.teacherName}</p>}
+            {settings.teacherName && (
+              <p className="mt-4 font-display text-xl font-bold">
+                {settings.teacherName}
+                {settings.teacherShortName && <span className="note ml-3 text-2xl font-normal">“{settings.teacherShortName}” to students</span>}
+              </p>
+            )}
             <p className="lede mt-5">Teaching Mathematics with an emphasis on clarity, understanding and confidence.</p>
-            <Link href="/about" className="btn btn-primary mt-8">Know More About Me</Link>
+            <Link href="/about" className="btn btn-primary mt-8">Know More About {settings.teacherShortName || "Me"}</Link>
           </div>
         </div>
       </section>
@@ -184,7 +189,7 @@ export default async function Home() {
       </section>
 
       {/* J. Final CTA */}
-      <NavyCTA title="Your Journey Towards Mathematical Excellence Starts Here." text="Explore the classes, find your batch and get in touch to begin learning.">
+      <NavyCTA title="Your Journey Towards Mathematical Excellence Starts Here." text={`Explore the classes, find your batch and get in touch${settings.teacherShortName ? ` with ${settings.teacherShortName}` : ""} to begin learning.`}>
         <WaButton href={wa}>Contact on WhatsApp</WaButton>
         <Link href="/timetable" className="btn btn-onnavy">Explore Timetable</Link>
       </NavyCTA>

@@ -102,7 +102,7 @@ export default async function Courses() {
         );
       })}
 
-      <NavyCTA title="Not sure which batch suits you?" text="Share the student's class and school timings and we will help you choose.">
+      <NavyCTA title="Not sure which batch suits you?" text={`Share the student's class and school timings and ${settings.teacherShortName || "we"} will help you choose.`}>
         <WaButton href={waLink(settings.whatsapp, WA_MESSAGES.home)}>Contact on WhatsApp</WaButton>
         <Link href="/timetable" className="btn btn-onnavy">View Timetable</Link>
       </NavyCTA>

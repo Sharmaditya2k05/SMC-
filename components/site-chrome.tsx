@@ -202,7 +202,7 @@ export function Header({ settings }: Chrome) {
 }
 
 /** Floating WhatsApp button + compact quick-access panel, on every page. */
-export function FloatingDock({ wa, mapsUrl }: Pick<Chrome, "wa" | "mapsUrl">) {
+export function FloatingDock({ wa, mapsUrl, teacher }: Pick<Chrome, "wa" | "mapsUrl"> & { teacher: string }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   useEffect(() => setOpen(false), [pathname]);
@@ -236,7 +236,7 @@ export function FloatingDock({ wa, mapsUrl }: Pick<Chrome, "wa" | "mapsUrl">) {
               ),
             )}
             <a href={wa} {...(waExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="flex min-h-11 items-center gap-3 rounded-md px-3 text-[0.92rem] hover:bg-raise">
-              <span className="text-[#17694a] dark:text-[#6fd0a6]"><WhatsAppIcon size={17} /></span> WhatsApp Teacher
+              <span className="text-[#17694a] dark:text-[#6fd0a6]"><WhatsAppIcon size={17} /></span> WhatsApp {teacher}
             </a>
           </motion.div>
         )}
@@ -255,7 +255,7 @@ export function FloatingDock({ wa, mapsUrl }: Pick<Chrome, "wa" | "mapsUrl">) {
         <a
           href={wa}
           {...(waExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-          aria-label="Chat on WhatsApp"
+          aria-label={`Chat with ${teacher} on WhatsApp`}
           className="flex h-14 items-center gap-2 rounded-full bg-[#17694a] px-4 text-white shadow-[0_10px_28px_-10px_rgba(23,105,74,.8)] transition-transform hover:-translate-y-0.5"
         >
           <WhatsAppIcon size={24} />

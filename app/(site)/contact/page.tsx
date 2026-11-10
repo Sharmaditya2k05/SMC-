@@ -18,12 +18,13 @@ export default async function Contact() {
   const waNumber = normaliseIndianMobile(settings.whatsapp);
   return (
     <>
-      <PageHero title="Let's Connect." subtitle="Ask about a batch, the syllabus or admission. WhatsApp is the quickest way to reach the teacher." />
+      <PageHero title="Let's Connect." subtitle={`Ask about a batch, the syllabus or admission. WhatsApp is the quickest way to reach ${settings.teacherShortName || "the teacher"}.`} />
 
       <section className="section">
         <div className="wrap grid gap-12 lg:grid-cols-[.85fr_1.15fr] lg:gap-16">
           <div>
             <h2 className="font-display text-2xl font-bold">{settings.brandName}</h2>
+            {settings.teacherName && <p className="mt-1 text-muted">Taught by {settings.teacherName}{settings.teacherShortName ? ` (${settings.teacherShortName})` : ""}</p>}
             <dl className="mt-6 divide-y divide-line border-y border-line">
               <div className="flex gap-4 py-5">
                 <span className="mt-0.5 text-[#17694a] dark:text-[#6fd0a6]"><WhatsAppIcon size={20} /></span>

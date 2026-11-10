@@ -8,7 +8,8 @@ import type { Settings, Timetable } from "./types";
 export const DEFAULT_SETTINGS: Settings = {
   brandName: "Siddhu Mathematics Classes",
   tagline: "Mathematics Made Simple. Concepts Made Strong.",
-  teacherName: "",
+  teacherName: "Deepak Siddhu",
+  teacherShortName: "Siddhu Sir",
   qualifications: "",
   experience: "",
   expertise: "Mathematics for Classes XI and XII",

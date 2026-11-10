@@ -20,6 +20,11 @@ export function Footer({ settings, year }: { settings: Settings; year: number })
         <div>
           <Logo settings={settings} onNavy />
           <p className="mt-5 max-w-xs font-serif text-xl leading-snug text-ivory/90">{settings.tagline}</p>
+          {settings.teacherName && (
+            <p className="mt-4 text-[0.93rem] text-ivory/70">
+              Mathematics with {settings.teacherName}{settings.teacherShortName ? ` – ${settings.teacherShortName}` : ""}
+            </p>
+          )}
         </div>
         <nav aria-label="Footer – pages" className={col}>
           <h2 className="mb-1 font-display text-sm font-bold text-gold">Explore</h2>
@@ -41,7 +46,7 @@ export function Footer({ settings, year }: { settings: Settings; year: number })
             <span>{settings.address || "Open classroom location in Google Maps"}</span>
           </a>
           <a href={wa} {...(wa.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})} className={`${a} inline-flex items-center gap-2`}>
-            <WhatsAppIcon size={16} /> Contact on WhatsApp
+            <WhatsAppIcon size={16} /> WhatsApp {settings.teacherShortName || "us"}
           </a>
           {settings.phone && <a href={`tel:${settings.phone.replace(/\s/g, "")}`} className={a}>{settings.phone}</a>}
           {socials.map((s) => (

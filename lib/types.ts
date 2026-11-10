@@ -46,6 +46,8 @@ export type Settings = {
   brandName: string;
   tagline: string;
   teacherName: string;
+  /** what students call the teacher, e.g. "Siddhu Sir" */
+  teacherShortName: string;
   qualifications: string;
   experience: string;
   expertise: string;

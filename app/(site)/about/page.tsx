@@ -6,8 +6,8 @@ import { NavyCTA, Placeholder } from "@/components/ui";
 import { getSettings } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "About the Teacher",
-  description: "Meet the educator behind Siddhu Mathematics Classes and the teaching philosophy that puts understanding before formulas.",
+  title: "About Deepak Siddhu (Siddhu Sir)",
+  description: "Meet Deepak Siddhu – Siddhu Sir to students – the Mathematics teacher behind Siddhu Mathematics Classes, and a teaching philosophy that puts understanding before formulas.",
   alternates: { canonical: "/about" },
 };
 
@@ -20,7 +20,7 @@ const PHILOSOPHY = [
 export default async function About() {
   const s = await getSettings();
   const profile = [
-    { label: "Teacher", value: s.teacherName },
+    { label: "Teacher", value: s.teacherName && s.teacherShortName ? `${s.teacherName} (${s.teacherShortName})` : s.teacherName },
     { label: "Educational qualifications", value: s.qualifications },
     { label: "Teaching experience", value: s.experience },
     { label: "Areas of expertise", value: s.expertise },
@@ -33,8 +33,10 @@ export default async function About() {
         <div className="wrap relative grid items-center gap-12 pb-16 pt-32 md:grid-cols-[1.2fr_.8fr] md:gap-20 md:pb-24 md:pt-44">
           <Rise>
             <h1 className="h1">Beyond Formulas. Towards Understanding.</h1>
-            <p className="lede mt-6">Meet the educator behind Siddhu Mathematics Classes.</p>
-            {s.teacherName && <p className="note mt-6 text-3xl">{s.teacherName}</p>}
+            <p className="lede mt-6">
+              Meet {s.teacherName ? `${s.teacherName}, the educator` : "the educator"} behind Siddhu Mathematics Classes{s.teacherShortName ? ` – ${s.teacherShortName} to every student in the classroom.` : "."}
+            </p>
+            {s.teacherShortName && <p className="note mt-6 text-3xl">{s.teacherShortName}</p>}
           </Rise>
           <Rise delay={0.15}>
             <Portrait settings={s} priority className="mx-auto w-full max-w-[22rem] md:max-w-none" />
@@ -45,7 +47,7 @@ export default async function About() {
       <section className="section">
         <div className="wrap grid gap-14 lg:grid-cols-[1.2fr_.8fr] lg:gap-20">
           <div>
-            <h2 className="h2">About</h2>
+            <h2 className="h2">About {s.teacherShortName || "the teacher"}</h2>
             <div className="mt-7 space-y-5 text-lg leading-relaxed">
               {s.bio.split(/\n\s*\n/).map((p, i) => (
                 <p key={i} className={i === 0 ? "font-serif text-2xl leading-snug md:text-[1.75rem]" : "text-muted"}>{p}</p>
@@ -91,9 +93,9 @@ export default async function About() {
             {s.studentMessage ? (
               s.studentMessage.split(/\n\s*\n/).map((p, i) => <p key={i} className="mb-4 font-serif text-2xl leading-snug">{p}</p>)
             ) : (
-              <p className="text-lg"><Placeholder>A personal message from the teacher will be shared here.</Placeholder></p>
+              <p className="text-lg"><Placeholder>A personal message from {s.teacherShortName || "the teacher"} will be shared here.</Placeholder></p>
             )}
-            {s.teacherName && <footer className="mt-4 text-muted">— {s.teacherName}</footer>}
+            {(s.teacherShortName || s.teacherName) && <footer className="mt-4 text-muted">— {s.teacherShortName || s.teacherName}</footer>}
           </blockquote>
         </div>
       </section>

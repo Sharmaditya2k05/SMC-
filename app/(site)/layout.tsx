@@ -18,6 +18,9 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
     url: SITE_URL,
     description: "Mathematics classes for Class XI and Class XII with a focus on conceptual understanding.",
     hasMap: settings.mapsUrl,
+    ...(settings.teacherName
+      ? { founder: { "@type": "Person", name: settings.teacherName, ...(settings.teacherShortName ? { alternateName: settings.teacherShortName } : {}), jobTitle: "Mathematics Teacher" } }
+      : {}),
     ...(settings.address ? { address: settings.address } : {}),
     ...(settings.phone ? { telephone: settings.phone } : {}),
     ...(geo ? { geo: { "@type": "GeoCoordinates", latitude: Number(geo[1]), longitude: Number(geo[2]) } } : {}),
@@ -33,7 +36,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <Header settings={{ logoUrl: settings.logoUrl, brandName: settings.brandName }} wa={wa} mapsUrl={settings.mapsUrl} />
       <main id="main" className="flex-1">{children}</main>
       <Footer settings={settings} year={year} />
-      <FloatingDock wa={wa} mapsUrl={settings.mapsUrl} />
+      <FloatingDock wa={wa} mapsUrl={settings.mapsUrl} teacher={settings.teacherShortName || "Teacher"} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </Motion>
   );

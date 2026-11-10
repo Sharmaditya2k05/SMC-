@@ -23,7 +23,7 @@ export default function Terms() {
           </div>
           <div>
             <h2>Enquiries and admission</h2>
-            <p>Sending an enquiry does not confirm a seat. Admission, fees and batch allotment are discussed directly with the teacher.</p>
+            <p>Sending an enquiry does not confirm a seat. Admission, fees and batch allotment are discussed directly with Siddhu Sir.</p>
           </div>
           <div>
             <h2>No guarantee of results</h2>

@@ -15,7 +15,7 @@ export function Portrait({ settings, className = "", priority = false }: { setti
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={settings.portraitUrl}
-            alt={settings.teacherName ? `${settings.teacherName}, Mathematics teacher at Siddhu Mathematics Classes` : "The Mathematics teacher at Siddhu Mathematics Classes"}
+            alt={settings.teacherName ? `${settings.teacherName}${settings.teacherShortName ? ` (${settings.teacherShortName})` : ""}, Mathematics teacher at Siddhu Mathematics Classes` : "The Mathematics teacher at Siddhu Mathematics Classes"}
             className="h-full w-full object-cover object-top"
             loading={priority ? "eager" : "lazy"}
             fetchPriority={priority ? "high" : "auto"}

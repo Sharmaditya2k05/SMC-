@@ -22,7 +22,7 @@ export default function Privacy() {
           </div>
           <div>
             <h2>What we do not do</h2>
-            <p>Enquiry details are not sold, rented or shared for marketing. They are visible only to the teacher through a password-protected dashboard.</p>
+            <p>Enquiry details are not sold, rented or shared for marketing. They are visible only to Siddhu Sir through a password-protected dashboard.</p>
           </div>
           <div>
             <h2>Stored on your device</h2>

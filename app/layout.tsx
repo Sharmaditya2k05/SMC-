@@ -8,7 +8,7 @@ const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "sw
 const dmSerif = DM_Serif_Display({ variable: "--font-dmserif", weight: "400", style: ["normal", "italic"], subsets: ["latin"], display: "swap" });
 
 const description =
-  "Siddhu Mathematics Classes (S.M.C) – concept-focused Mathematics classes for Class XI and Class XII, with structured batches and study material.";
+  "Siddhu Mathematics Classes (S.M.C) – concept-focused Mathematics classes for Class XI and Class XII by Deepak Siddhu (Siddhu Sir), with structured batches and study material.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   applicationName: "Siddhu Mathematics Classes",
   keywords: [
     "Siddhu Mathematics Classes", "S.M.C", "Mathematics classes for Class XI", "Mathematics classes for Class XII",
-    "Class 11 Maths coaching", "Class 12 Maths coaching", "Mathematics teacher",
+    "Class 11 Maths coaching", "Class 12 Maths coaching", "Mathematics teacher", "Deepak Siddhu", "Siddhu Sir",
   ],
   openGraph: {
     type: "website",
