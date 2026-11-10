@@ -53,7 +53,7 @@ export function NamePlate({ settings, className = "" }: { settings: Settings; cl
   if (name.trim().toLowerCase() === "siddhu sir") {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img src="/brand/nameplate.webp" alt="Siddhu Sir" width={1000} height={346} className={`relative z-10 mx-auto block h-auto w-[82%] max-w-[22rem] ${className}`} />
+      <img src="/brand/nameplate.webp" alt="Siddhu Sir" width={1000} height={291} className={`relative z-10 mx-auto block h-auto w-[82%] max-w-[22rem] drop-shadow-[0_10px_18px_rgba(22,23,27,.22)] ${className}`} />
     );
   }
   return (
