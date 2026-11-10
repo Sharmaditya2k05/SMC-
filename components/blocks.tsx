@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { BookOpen, CalendarDays, MapPin, Navigation } from "lucide-react";
-import { time12, waLink, WA_MESSAGES } from "@/lib/format";
+import { ArrowRight, BookOpen, CalendarDays, MapPin, Navigation } from "lucide-react";
+import { time12 } from "@/lib/format";
 import type { Settings, Slot, Timetable } from "@/lib/types";
 import { MiniGraph } from "./math-art";
-import { BulbMark, WaButton } from "./ui";
+import { BulbMark } from "./ui";
 
 /** "Mon – Wed" for consecutive days, otherwise "Mon, Wed, Fri". */
 const ORDER = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -100,31 +100,25 @@ export function SlotRows({ slots, tone = "light", pill = false }: { slots: Slot[
 }
 
 const COURSE_COPY = {
-  XI: { text: "A strong foundation for advanced learning.", graph: "parabola", label: <>y = x²</> },
-  XII: { text: "Master the concepts and strengthen problem-solving.", graph: "cos", label: <>y = cos x</> },
+  XI: { text: "Build conceptual clarity and a strong foundation for higher-level mathematics.", graph: "parabola", label: <>y = x²</> },
+  XII: { text: "Master the key concepts of Class XII with a strong focus on problem-solving.", graph: "cos", label: <>y = cos x</> },
 } as const;
 
 /** Home page course card: Class XI on white, Class XII on charcoal. */
-export function CourseCard({ cls, timetable, whatsapp }: { cls: "XI" | "XII"; timetable: Timetable; whatsapp: string }) {
+export function CourseCard({ cls }: { cls: "XI" | "XII" }) {
   const dark = cls === "XII";
   const c = COURSE_COPY[cls];
   return (
-    <article className={`relative overflow-hidden rounded-xl border p-6 md:p-7 ${dark ? "border-transparent bg-deep text-white" : "border-line bg-surface shadow-[var(--shadow)]"}`}>
-      <div className="grid gap-4 sm:grid-cols-[1fr_auto]">
+    <article className={`relative overflow-hidden rounded-xl border p-6 md:p-8 ${dark ? "border-transparent bg-deep text-white" : "border-line bg-surface shadow-[var(--shadow)]"}`}>
+      <div className="grid items-center gap-4 sm:grid-cols-[1fr_auto]">
         <div>
           <h3 className="bar-title text-2xl md:text-[1.7rem]">Class {cls} Mathematics</h3>
-          <p className={`mt-2 pl-4 ${dark ? "text-white/75" : "text-muted"}`}>{c.text}</p>
-          <div className="mt-5 pl-4">
-            <SlotRows slots={timetable.slots.filter((s) => s.cls === cls)} tone={dark ? "dark" : "light"} />
-          </div>
+          <p className={`mt-3 max-w-sm pl-4 ${dark ? "text-white/75" : "text-muted"}`}>{c.text}</p>
+          <Link href={`/courses#class-${cls.toLowerCase()}`} className={`btn btn-sm ml-4 mt-6 ${dark ? "btn-onnavy" : "btn-outline"}`}>
+            <BookOpen size={16} aria-hidden="true" /> View the course <ArrowRight size={16} aria-hidden="true" />
+          </Link>
         </div>
         <MiniGraph kind={c.graph} label={c.label} tone={dark ? "dark" : "light"} className="hidden h-28 w-48 sm:block" />
-      </div>
-      <div className="mt-6 flex flex-wrap gap-3 pl-4">
-        <Link href="/timetable" className={`btn ${dark ? "btn-onnavy" : "btn-outline"}`}>
-          <CalendarDays size={17} aria-hidden="true" /> View Timetable
-        </Link>
-        <WaButton href={waLink(whatsapp, WA_MESSAGES[cls])}>Enquire on WhatsApp</WaButton>
       </div>
     </article>
   );

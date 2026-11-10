@@ -1,14 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, CalendarDays, Check, FileText } from "lucide-react";
+import { Check, FileText } from "lucide-react";
 import { CourseCard, Portrait } from "@/components/blocks";
 import { MiniGraph, SquareIdentity } from "@/components/math-art";
 import { Reveal, Rise } from "@/components/motion";
-import { ResourceRow } from "@/components/resources";
 import { Chapter } from "@/components/story";
-import { WeekPlot } from "@/components/timetable";
-import { Arc, ArrowLink, WaButton } from "@/components/ui";
-import { getAnnouncements, getResources, getSettings, getTimetable } from "@/lib/content";
-import { waLink, WA_MESSAGES } from "@/lib/format";
+import { Arc, ArrowLink } from "@/components/ui";
+import { getAnnouncements, getSettings } from "@/lib/content";
 
 const FEATURES = [
   { kind: "parabola", label: null, title: "Conceptual Clarity", text: "Build a strong and lasting understanding of every topic from the basics." },
@@ -17,12 +14,12 @@ const FEATURES = [
   { kind: "recip", label: <>y = 1/x</>, title: "Personal Attention", text: "Clear your doubts, strengthen weak areas and get the support you need to improve." },
 ] as const;
 
+/**
+ * Home is the introduction only. Timings, notes and contact details each have
+ * their own page further down the scroll, so they are not repeated here.
+ */
 export default async function Home() {
-  const [settings, timetable, resources, announcements] = await Promise.all([getSettings(), getTimetable(), getResources(), getAnnouncements()]);
-  const wa = waLink(settings.whatsapp, WA_MESSAGES.home);
-  const pick = (cls: string) => resources.filter((r) => r.cls === cls).sort((a, b) => a.chapter.localeCompare(b.chapter, "en", { numeric: true })).slice(0, 2);
-  const samples = [...pick("XI"), ...pick("XII")];
-  const preview = samples.length ? samples : resources.slice(0, 4);
+  const [settings, announcements] = await Promise.all([getSettings(), getAnnouncements()]);
   const sir = settings.teacherShortName;
 
   return (
@@ -50,7 +47,6 @@ export default async function Home() {
             <Rise delay={0.24} className="mt-8 flex flex-wrap items-center gap-3">
               <ArrowLink href="/courses">Explore Classes</ArrowLink>
               <Link href="/study-material" className="btn btn-outline"><FileText size={17} aria-hidden="true" /> Get Study Material</Link>
-              <WaButton href={wa} className="sm:hidden">Chat on WhatsApp</WaButton>
             </Rise>
             <Rise delay={0.32}>
               <ul className="mt-7 hidden flex-wrap gap-y-3 text-sm font-medium sm:flex sm:divide-x sm:divide-line">
@@ -108,31 +104,17 @@ export default async function Home() {
 
       {/* 04 Courses */}
       <Chapter n="04" label="Courses">
-        <div className="wrap pb-10 md:pb-20">
+        <div className="wrap pb-12 md:pb-20">
           <div className="grid gap-4 md:gap-5 lg:grid-cols-2">
-            <CourseCard cls="XI" timetable={timetable} whatsapp={settings.whatsapp} />
-            <CourseCard cls="XII" timetable={timetable} whatsapp={settings.whatsapp} />
+            <CourseCard cls="XI" />
+            <CourseCard cls="XII" />
           </div>
-        </div>
-      </Chapter>
-
-      {/* 05 Timetable */}
-      <Chapter n="05" label="Timetable" className="overflow-hidden">
-        <Arc className="-right-10 top-0 hidden w-[22rem] md:block" />
-        <div className="wrap relative pb-10 md:pb-20">
-          <h2 className="h2 mb-5 md:mb-6">Weekly <span className="text-accent">Class Schedule</span></h2>
-          <Reveal><WeekPlot timetable={timetable} /></Reveal>
-          <p className="mt-6 text-center">
-            <Link href="/timetable" className="btn btn-outline btn-sm px-5">
-              <CalendarDays size={16} aria-hidden="true" /> View Complete Timetable <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-          </p>
         </div>
       </Chapter>
 
       {/* Notices – only what the teacher has published */}
       {announcements.length > 0 && (
-        <section className="wrap pb-14 md:pb-20">
+        <section className="wrap pb-12 md:pb-20">
           <h2 className="bar-title mb-5 text-2xl">Notices</h2>
           <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {announcements.slice(0, 3).map((a) => (
@@ -145,39 +127,6 @@ export default async function Home() {
           </ul>
         </section>
       )}
-
-      {/* 06 Resources */}
-      <Chapter n="06" label="Resources" className="overflow-hidden">
-        <Arc className="-bottom-8 -right-10 hidden w-[20rem] md:block" />
-        <div className="wrap relative pb-10 md:pb-20">
-          <h2 className="h2 mb-5 md:mb-6">Your <span className="text-accent">Learning Resources,</span> All in One Place.</h2>
-          {preview.length ? (
-            <ResourceRow resources={preview} />
-          ) : (
-            <p className="card grid-paper p-10 text-center text-muted">Study material will appear here as soon as it is published.</p>
-          )}
-          <p className="mt-6 text-center">
-            <Link href="/study-material" className="link inline-flex items-center gap-2 font-display font-semibold">
-              Explore All Study Materials <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-          </p>
-        </div>
-      </Chapter>
-
-      {/* 07 Get started */}
-      <Chapter n="07" label="Get Started" tone="dark" className="overflow-hidden no-print">
-        <Arc className="-bottom-14 right-0 w-[28rem]" />
-        <div className="wrap relative flex flex-col gap-6 py-10 md:gap-8 md:py-16 lg:flex-row lg:items-center lg:justify-between">
-          <h2 className="font-display text-[clamp(1.9rem,3.6vw,2.9rem)] font-bold leading-[1.08] tracking-[-0.035em] lg:max-w-[34rem]">
-            Your Journey Towards Mathematical Excellence <em className="hi">Starts Here.</em>
-          </h2>
-          <span className="hidden h-16 w-px bg-white/25 lg:block" aria-hidden="true" />
-          <div className="flex flex-wrap gap-3">
-            <WaButton href={wa}>Contact on WhatsApp</WaButton>
-            <Link href="/timetable" className="btn btn-onnavy"><CalendarDays size={17} aria-hidden="true" /> Explore Timetable <ArrowRight size={17} aria-hidden="true" /></Link>
-          </div>
-        </div>
-      </Chapter>
     </>
   );
 }

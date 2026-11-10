@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { PrintButton } from "@/components/interactive";
 import { TimetableCard, WeekPlot } from "@/components/timetable";
-import { NavyCTA, PageHero, WaButton } from "@/components/ui";
-import { getSettings, getTimetable } from "@/lib/content";
-import { waLink } from "@/lib/format";
+import { PageHero } from "@/components/ui";
+import { getTimetable } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Batch Timetable – Class XI and XII",
@@ -11,9 +10,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/timetable" },
 };
 
+/** The one place on the site where batch timings are listed. */
 export default async function TimetablePage() {
-  const [settings, timetable] = await Promise.all([getSettings(), getTimetable()]);
-  const wa = waLink(settings.whatsapp, `Hello ${settings.teacherShortName || ""}, I need help choosing a Mathematics batch at Siddhu Mathematics Classes.`.replace("Hello ,", "Hello,"));
+  const timetable = await getTimetable();
   return (
     <>
       <div className="no-print">
@@ -22,7 +21,6 @@ export default async function TimetablePage() {
           subtitle="Separate batches for Class XI and Class XII, Monday to Saturday. All timings are in Indian Standard Time (IST)."
         >
           <PrintButton />
-          <WaButton href={wa}>Ask about a batch</WaButton>
         </PageHero>
       </div>
 
@@ -33,30 +31,17 @@ export default async function TimetablePage() {
       </div>
 
       <section className="section">
-        <div className="wrap space-y-10">
+        <div className="wrap space-y-8">
           <div className="grid gap-6 md:grid-cols-2">
-            <TimetableCard cls="XI" timetable={timetable} whatsapp={settings.whatsapp} />
-            <TimetableCard cls="XII" timetable={timetable} whatsapp={settings.whatsapp} />
+            <TimetableCard cls="XI" timetable={timetable} />
+            <TimetableCard cls="XII" timetable={timetable} />
           </div>
-          <div>
-            <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
-              <h2 className="h2 text-[clamp(1.6rem,2.8vw,2.2rem)]">Weekly <span className="text-accent">Class Schedule</span></h2>
-              <p className="flex items-center gap-5 font-display text-sm font-semibold">
-                <span className="flex items-center gap-2"><i className="h-3.5 w-3.5 rounded bg-[var(--xi)]" aria-hidden="true" /> Class XI</span>
-                <span className="flex items-center gap-2"><i className="h-3.5 w-3.5 rounded bg-[var(--xii)]" aria-hidden="true" /> Class XII</span>
-              </p>
-            </div>
-            <WeekPlot timetable={timetable} />
-            <p className="mt-4 text-sm text-muted">
-              The two classes exchange time slots midweek. Sunday is not a listed teaching day. Timings can change – any update is published on this page.
-            </p>
-          </div>
+          <WeekPlot timetable={timetable} />
+          <p className="text-sm text-muted">
+            The two classes exchange time slots midweek. Sunday is not a listed teaching day. Timings can change – any update is published on this page.
+          </p>
         </div>
       </section>
-
-      <NavyCTA title={<>Need Help Choosing a Batch? <em className="hi">Contact Us.</em></>}>
-        <WaButton href={wa}>Contact on WhatsApp</WaButton>
-      </NavyCTA>
     </>
   );
 }

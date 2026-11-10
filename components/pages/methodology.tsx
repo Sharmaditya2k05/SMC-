@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { BarChart3, BookOpen, Brain, FileText, Layers, PlayCircle } from "lucide-react";
+import { BarChart3, BookOpen, Brain, Layers } from "lucide-react";
 import { SquareIdentity } from "@/components/math-art";
 import { MethodStory, type Step } from "@/components/story";
-import { Arc, LightCTA } from "@/components/ui";
+import { Arc } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Learning Methodology",
@@ -63,10 +62,6 @@ export default function Methodology() {
         </div>
       </section>
 
-      <LightCTA title={<>Take the <em className="hi">Right Approach</em> to Mathematics.</>}>
-        <Link href="/study-material" className="btn btn-primary min-w-52"><FileText size={18} aria-hidden="true" /> Get Study Material</Link>
-        <Link href="/courses" className="btn btn-outline min-w-52"><PlayCircle size={18} aria-hidden="true" /> Explore Classes</Link>
-      </LightCTA>
     </>
   );
 }

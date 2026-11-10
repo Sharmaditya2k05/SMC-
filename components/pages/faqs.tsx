@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FaqExplorer } from "@/components/interactive";
-import { NavyCTA, PageHero, WaButton } from "@/components/ui";
+import { PageHero } from "@/components/ui";
 import { getSettings, getTimetable } from "@/lib/content";
-import { slotDays, slotTime, waLink, WA_MESSAGES } from "@/lib/format";
+import { slotDays, slotTime } from "@/lib/format";
 import type { Timetable } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -47,8 +47,8 @@ export default async function Faqs() {
   // `text` feeds the FAQ structured data; `a` is the richer on-page answer.
   const faqs: { q: string; topic: string; text: string; a?: React.ReactNode }[] = [
     { topic: "Classes", q: "Which classes are taught?", text: `${who} teaches Mathematics for Class XI and Class XII at Siddhu Mathematics Classes.` },
-    { topic: "Classes", q: "Do you teach Class XI Mathematics?", text: `Yes. Class XI Mathematics has its own dedicated batch. Timings – ${xi}.`, a: <p>Yes. Class XI Mathematics has its own dedicated batch. Timings – {xi}. See <Link href="/courses#class-xi">the Class XI course</Link>.</p> },
-    { topic: "Classes", q: "Do you teach Class XII Mathematics?", text: `Yes. Class XII Mathematics has its own dedicated batch. Timings – ${xii}.`, a: <p>Yes. Class XII Mathematics has its own dedicated batch. Timings – {xii}. See <Link href="/courses#class-xii">the Class XII course</Link>.</p> },
+    { topic: "Classes", q: "Do you teach Class XI Mathematics?", text: "Yes. Class XI Mathematics has its own dedicated batch.", a: <p>Yes. Class XI Mathematics has its own dedicated batch. See <Link href="/courses#class-xi">the Class XI course</Link> and the <Link href="/timetable">timetable</Link>.</p> },
+    { topic: "Classes", q: "Do you teach Class XII Mathematics?", text: "Yes. Class XII Mathematics has its own dedicated batch.", a: <p>Yes. Class XII Mathematics has its own dedicated batch. See <Link href="/courses#class-xii">the Class XII course</Link> and the <Link href="/timetable">timetable</Link>.</p> },
     { topic: "Timings", q: "What are the batch timings?", text: `Class XI – ${xi}. Class XII – ${xii}. All timings are in IST, Monday to Saturday.`, a: <Timings t={timetable} /> },
     { topic: "Study material", q: "Are study materials available online?", text: "Yes. Selected notes are available as PDFs in the Study Material section of this website.", a: <p>Yes. Selected notes are available as PDFs in the <Link href="/study-material">Study Material</Link> section, where you can preview or download them.</p> },
     { topic: "Study material", q: "Can students access sample notes?", text: "Yes. Sample chapter-wise notes for Class XI and XII can be previewed and downloaded without signing in.", a: <p>Yes. Sample chapter-wise notes for Class XI and XII can be previewed and downloaded from the <Link href="/study-material">notes library</Link> without signing in.</p> },
@@ -72,9 +72,6 @@ export default async function Faqs() {
           <FaqExplorer items={faqs.map((f) => ({ q: f.q, topic: f.topic, a: f.a ?? <p>{f.text}</p> }))} />
         </div>
       </section>
-      <NavyCTA title={<>Still have a <em className="hi">question?</em></>}>
-        <WaButton href={waLink(settings.whatsapp, WA_MESSAGES.home)}>Contact on WhatsApp</WaButton>
-      </NavyCTA>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </>
   );

@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight, BookOpen, CalendarDays, Check, Info, Target } from "lucide-react";
-import { shortTime } from "@/components/blocks";
+import { ArrowRight, BookOpen, Check, Info, Target } from "lucide-react";
 import { MiniGraph } from "@/components/math-art";
-import { ResourceRow } from "@/components/resources";
-import { SpyNav } from "@/components/story";
-import { LightCTA, PageHero, WaButton } from "@/components/ui";
-import { getResources, getSettings, getTimetable } from "@/lib/content";
-import { lines, waLink, WA_MESSAGES } from "@/lib/format";
+import { PageHero } from "@/components/ui";
+import { getSettings } from "@/lib/content";
+import { lines } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Courses & Classes – Class XI and XII Mathematics",
-  description: "Mathematics classes for Class XI and Class XII with Siddhu Sir at Siddhu Mathematics Classes: curriculum modules, batch timings and sample study material.",
+  description: "Mathematics for Class XI and Class XII with Siddhu Sir at Siddhu Mathematics Classes: what each course covers and how it is taught.",
   alternates: { canonical: "/courses" },
 };
 
@@ -35,8 +31,9 @@ const APPROACH = [
   "Doubt resolution and concept reinforcement.",
 ];
 
+/** What each course covers. Batch timings live on the Timetable page, notes on Study Material. */
 export default async function Courses() {
-  const [settings, timetable, resources] = await Promise.all([getSettings(), getTimetable(), getResources()]);
+  const settings = await getSettings();
   return (
     <>
       <PageHero
@@ -50,24 +47,17 @@ export default async function Courses() {
       {(["XI", "XII"] as const).map((cls) => {
         const c = COURSES[cls];
         const dark = cls === "XII";
-        const k = cls.toLowerCase();
         const modules = lines(cls === "XI" ? settings.syllabusXI : settings.syllabusXII);
-        const slots = timetable.slots.filter((s) => s.cls === cls);
-        const samples = resources.filter((r) => r.cls === cls).sort((a, b) => a.chapter.localeCompare(b.chapter, "en", { numeric: true })).slice(0, 3);
         const sub = dark ? "text-white/75" : "text-muted";
         return (
-          <section key={cls} id={`class-${k}`} className={`scroll-mt-20 ${dark ? "bg-deep text-white" : ""}`}>
+          <section key={cls} id={`class-${cls.toLowerCase()}`} className={`scroll-mt-20 ${dark ? "bg-deep text-white" : ""}`}>
             <div className="wrap grid gap-5 py-10 md:gap-8 md:py-16 lg:grid-cols-[10.5rem_1fr] lg:gap-10">
-              {/* sticky chapter label + in-section navigation */}
-              <aside className={`lg:border-r lg:pr-6 ${dark ? "lg:border-white/15" : "lg:border-line"}`}>
-                <div className="hidden lg:sticky lg:top-28 lg:block">
+              <aside className={`hidden lg:block lg:border-r lg:pr-6 ${dark ? "lg:border-white/15" : "lg:border-line"}`}>
+                <div className="lg:sticky lg:top-28">
                   <p className="font-display text-xl font-bold text-accent">{c.n}</p>
                   <p className="font-display text-2xl font-bold leading-tight tracking-[-0.03em]">Class {cls}</p>
                   <p className={`text-lg ${sub}`}>Mathematics</p>
-                  <div className="mt-6 hidden lg:block">
-                    <SpyNav tone={dark ? "dark" : "light"} items={[{ id: `${k}-syllabus`, label: "Syllabus" }, { id: `${k}-timetable`, label: "Timetable" }, { id: `${k}-material`, label: "Study Material" }]} />
-                  </div>
-                  {dark && <MiniGraph kind="sine" tone="dark" className="mt-16 hidden h-28 w-full lg:block" />}
+                  <MiniGraph kind={dark ? "sine" : "parabola"} tone={dark ? "dark" : "light"} className="mt-10 h-28 w-full" />
                 </div>
               </aside>
 
@@ -76,17 +66,13 @@ export default async function Courses() {
                 <h2 className="h2 mt-3">{c.heading}</h2>
                 <p className={`mt-3 text-lg ${sub}`}>{c.text}</p>
 
-                <div className="mt-8 grid gap-8 xl:grid-cols-[1.15fr_.85fr]">
-                  <div id={`${k}-syllabus`} className="order-2 scroll-mt-28 xl:order-1">
-                    <ol className="relative space-y-1.5">
-                      <span className="absolute bottom-4 left-[6px] top-4 w-0.5 bg-accent" aria-hidden="true" />
+                <div className="mt-8 grid gap-8 xl:grid-cols-[1.2fr_.8fr] xl:items-start">
+                  <div>
+                    <ol className="relative grid gap-1.5 sm:grid-cols-2 sm:gap-x-4">
                       {modules.map((m, i) => (
-                        <li key={m} className="relative flex items-center gap-4 pl-8">
-                          <span className={`absolute left-0 h-3.5 w-3.5 rounded-full border-[2.5px] border-[#F5861F] ${dark ? "bg-[#16171B]" : "bg-[var(--bg)]"}`} aria-hidden="true" />
-                          <span className={`flex min-h-9 flex-1 items-center gap-4 rounded-md px-3 font-display text-[0.95rem] font-semibold ${dark ? "bg-white/[0.07]" : "bg-surface shadow-[0_1px_2px_rgba(22,23,27,.06)]"}`}>
-                            <span className="w-6 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
-                            {m}
-                          </span>
+                        <li key={m} className={`flex min-h-10 items-center gap-3 rounded-md px-3 font-display text-[0.93rem] font-semibold ${dark ? "bg-white/[0.07]" : "bg-surface shadow-[0_1px_2px_rgba(22,23,27,.06)]"}`}>
+                          <span className="w-6 shrink-0 tabular-nums text-accent">{String(i + 1).padStart(2, "0")}</span>
+                          {m}
                         </li>
                       ))}
                     </ol>
@@ -95,60 +81,24 @@ export default async function Courses() {
                     </p>
                   </div>
 
-                  <div id={`${k}-timetable`} className="order-1 scroll-mt-28 space-y-5 xl:order-2">
-                    <div className={`rounded-xl border p-5 md:p-6 ${dark ? "border-white/15 bg-white/[0.04]" : "card"}`}>
-                      <h3 className="flex items-center gap-3 font-display text-lg font-bold">
-                        <CalendarDays size={21} className="text-accent" aria-hidden="true" /> Class {cls} Timetable
-                        <span className={`ml-auto text-sm font-normal ${sub}`}>(IST)</span>
-                      </h3>
-                      <ul className="mt-4 space-y-2.5">
-                        {slots.map((s) => (
-                          <li key={s.id} className="flex items-center justify-between gap-3">
-                            <span className="flex items-center gap-3 font-display text-[0.95rem] font-semibold"><CalendarDays size={17} aria-hidden="true" /> {s.days.join(", ")}</span>
-                            <span className="rounded-md bg-[#F9E4D2] px-3 py-1.5 font-display text-sm font-bold tabular-nums text-[#16171B]">{shortTime(s)}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <h3 className={`mt-5 flex items-center gap-3 border-t pt-5 font-display text-lg font-bold ${dark ? "border-white/15" : "border-line"}`}>
-                        <Target size={21} className="text-accent" aria-hidden="true" /> Learning Approach
-                      </h3>
-                      <ul className="mt-3 space-y-2">
-                        {APPROACH.map((a) => (
-                          <li key={a} className="flex gap-3 text-[0.95rem]">
-                            <Check size={18} strokeWidth={3} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" /> {a}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="flex flex-wrap gap-3 [&>*]:flex-1 [&>*]:whitespace-nowrap">
-                      <WaButton href={waLink(settings.whatsapp, WA_MESSAGES[cls])}>Enquire on WhatsApp</WaButton>
-                    </div>
+                  <div className={`rounded-xl border p-5 md:p-6 ${dark ? "border-white/15 bg-white/[0.04]" : "card"}`}>
+                    <h3 className="flex items-center gap-3 font-display text-lg font-bold">
+                      <Target size={21} className="text-accent" aria-hidden="true" /> Learning Approach
+                    </h3>
+                    <ul className="mt-3 space-y-2">
+                      {APPROACH.map((a) => (
+                        <li key={a} className="flex gap-3 text-[0.95rem]">
+                          <Check size={18} strokeWidth={3} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" /> {a}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                </div>
-
-                <div id={`${k}-material`} className="mt-10 scroll-mt-28">
-                  <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                    <h3 className="bar-title text-xl">Class {cls} Study Material <span className={`font-sans font-normal tracking-normal ${sub}`}>(PDF Notes)</span></h3>
-                    <Link href={`/study-material?class=${cls}`} className={`inline-flex items-center gap-1.5 font-display text-sm font-semibold underline underline-offset-4 ${dark ? "text-[#FFA54A]" : "text-blue"}`}>
-                      All Class {cls} resources <ArrowRight size={15} aria-hidden="true" />
-                    </Link>
-                  </div>
-                  {samples.length ? (
-                    <ResourceRow resources={samples} tone={dark ? "dark" : "light"} cols={3} />
-                  ) : (
-                    <p className={sub}>Notes for Class {cls} will be added here.</p>
-                  )}
                 </div>
               </div>
             </div>
           </section>
         );
       })}
-
-      <LightCTA title={<>Choose Your Class<span className="text-accent">.</span> <em className="hi">Start Your Journey.</em></>}>
-        <a href="#class-xi" className="btn btn-primary min-w-40"><BookOpen size={18} aria-hidden="true" /> Class XI <ArrowRight size={17} aria-hidden="true" /></a>
-        <a href="#class-xii" className="btn btn-outline min-w-40"><BookOpen size={18} aria-hidden="true" /> Class XII <ArrowRight size={17} aria-hidden="true" /></a>
-      </LightCTA>
     </>
   );
 }

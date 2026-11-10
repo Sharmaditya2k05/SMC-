@@ -83,13 +83,6 @@ export function PageHero({ title, subtitle, children }: { title: React.ReactNode
   return (
     <section className="relative overflow-hidden border-b border-line">
       <div className="grid-paper absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent_90%)]" aria-hidden="true" />
-      <Arc className="-bottom-10 right-0 hidden w-[32rem] md:block" />
-      <div className="pointer-events-none absolute inset-0 hidden text-muted xl:block" aria-hidden="true">
-        <span className="absolute left-12 top-10 text-xl"><EqEuler /></span>
-        <MiniSine className="absolute left-10 top-[4.5rem] w-36" />
-        <span className="absolute right-14 top-10 text-xl"><EqPythagoras /></span>
-        <span className="absolute right-16 top-[5.5rem] text-lg"><EqIntegral /></span>
-      </div>
       <div className="wrap relative py-9 text-center md:py-20">
         <h1 className="h1 mx-auto max-w-4xl">
           <span className="relative inline-block">

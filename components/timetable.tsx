@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { CalendarDays, Clock } from "lucide-react";
 import { DAYS, DAY_NAMES } from "@/lib/defaults";
-import { slotDays, slotTime, time12, waLink, WA_MESSAGES } from "@/lib/format";
+import { slotDays, slotTime, time12 } from "@/lib/format";
 import type { Timetable } from "@/lib/types";
-import { WaButton } from "./ui";
 
 const pill = {
   XI: "bg-[var(--xi)] text-[var(--xi-fg)]",
@@ -67,7 +65,7 @@ export function WeekPlot({ timetable }: { timetable: Timetable }) {
 }
 
 /** Large per-class timetable card with a coloured header bar. */
-export function TimetableCard({ cls, timetable, whatsapp, actions = true }: { cls: "XI" | "XII"; timetable: Timetable; whatsapp: string; actions?: boolean }) {
+export function TimetableCard({ cls, timetable }: { cls: "XI" | "XII"; timetable: Timetable }) {
   const slots = timetable.slots.filter((s) => s.cls === cls);
   return (
     <article className="card relative overflow-hidden">
@@ -99,12 +97,6 @@ export function TimetableCard({ cls, timetable, whatsapp, actions = true }: { cl
             )}
           </tbody>
         </table>
-        {actions && (
-          <div className="no-print mt-6 flex flex-wrap gap-3">
-            <WaButton href={waLink(whatsapp, WA_MESSAGES[cls])} className="btn-sm">Enquire on WhatsApp</WaButton>
-            <Link href={`/courses#class-${cls.toLowerCase()}`} className="btn btn-outline btn-sm">About Class {cls}</Link>
-          </div>
-        )}
       </div>
     </article>
   );

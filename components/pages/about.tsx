@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CalendarDays, Target, User, Users } from "lucide-react";
 import { Portrait } from "@/components/blocks";
 import { Reveal } from "@/components/motion";
-import { ArrowLink, NavyCTA, Placeholder } from "@/components/ui";
+import { Placeholder } from "@/components/ui";
 import { getSettings } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -104,10 +104,6 @@ export default async function About() {
           </div>
         </div>
       </section>
-
-      <NavyCTA title={<>Let&apos;s Make Mathematics <em className="hi">Easier Together.</em></>}>
-        <ArrowLink href="/courses" className="btn-onnavy">Explore My Classes</ArrowLink>
-      </NavyCTA>
     </>
   );
 }

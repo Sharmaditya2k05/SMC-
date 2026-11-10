@@ -30,7 +30,7 @@ export const DEFAULT_SETTINGS: Settings = {
     "https://www.google.com/maps?q=Siddhu+Mathematics+Class&ll=28.6703477,77.4565317&z=16&output=embed",
   driveFolderUrl: "https://drive.google.com/drive/folders/1-1FSZXIS-XwbuXO9ZGFMaCh_Hd-eA_0Z",
   instagram: "https://www.instagram.com/siddhumathsclasses",
-  youtube: "",
+  youtube: "https://youtube.com/@siddhumathsclasses",
   facebook: "https://www.facebook.com/SiddhuClasses/",
   bannerEnabled: true,
   bannerText: "Class XI & XII Mathematics – Explore Available Batches.",
