@@ -31,12 +31,9 @@ export default async function Contact() {
           <div className="card flex flex-col p-6 md:p-8">
             <h2 className="bar-title text-2xl">Message {sir} on WhatsApp</h2>
             <p className="mt-3 pl-4 text-muted">
-              Pick the class and WhatsApp opens with your message ready. Add the student&apos;s name and school before you send.
+              WhatsApp opens with your message ready. Add the student&apos;s name, class and school before you send.
             </p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              <WaButton href={waLink(settings.whatsapp, WA_MESSAGES.XI)}>Class XI</WaButton>
-              <WaButton href={waLink(settings.whatsapp, WA_MESSAGES.XII)}>Class XII</WaButton>
-            </div>
+            <WaButton href={waLink(settings.whatsapp, WA_MESSAGES.home)} className="mt-6 w-full">Contact on WhatsApp</WaButton>
 
             <dl className="mt-7 divide-y divide-line border-t border-line">
               <div className="flex items-center gap-5 py-4">
