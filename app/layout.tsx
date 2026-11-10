@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display, Sora } from "next/font/google";
+import { getSettings } from "@/lib/content";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -39,15 +40,10 @@ export const viewport: Viewport = {
   ],
 };
 
-// Applies the saved theme before first paint (light is the default experience).
-const themeScript = `try{var t=localStorage.getItem("smc-theme");if(t==="dark")document.documentElement.dataset.theme="dark"}catch(e){}`;
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { siteTheme } = await getSettings();
   return (
-    <html lang="en-IN" data-theme="light" suppressHydrationWarning className={`${sora.variable} ${inter.variable} ${playfair.variable} antialiased`}>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
+    <html lang="en-IN" data-theme={siteTheme === "dark" ? "dark" : "light"} className={`${sora.variable} ${inter.variable} ${playfair.variable} antialiased`}>
       <body className="min-h-dvh flex flex-col">{children}</body>
     </html>
   );

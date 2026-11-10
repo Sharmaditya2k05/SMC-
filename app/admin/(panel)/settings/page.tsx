@@ -34,6 +34,7 @@ const GROUPS: { title: string; note?: string; fields: Field[] }[] = [
   {
     title: "Brand",
     fields: [
+      { name: "siteTheme", label: "Website theme", type: "select", options: [{ value: "light", label: "Light (warm white)" }, { value: "dark", label: "Dark (charcoal)" }], help: "Every visitor sees this theme. There is no switch on the website itself." },
       { name: "brandName", label: "Name", type: "text" },
       { name: "tagline", label: "Tagline", type: "text" },
       { name: "logoUrl", label: "Logo image", type: "file", accept: "image/png,image/webp,image/jpeg", help: "Optional. Without it, the S.M.C wordmark is used." },

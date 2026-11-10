@@ -32,6 +32,7 @@ export const DEFAULT_SETTINGS: Settings = {
   instagram: "https://www.instagram.com/siddhumathsclasses",
   youtube: "https://youtube.com/@siddhumathsclasses",
   facebook: "https://www.facebook.com/SiddhuClasses/",
+  siteTheme: "light",
   bannerEnabled: true,
   bannerText: "Class XI & XII Mathematics – Explore Available Batches.",
   syllabusXI: [

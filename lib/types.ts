@@ -66,6 +66,8 @@ export type Settings = {
   instagram: string;
   youtube: string;
   facebook: string;
+  /** One theme for every visitor, chosen in the admin panel. */
+  siteTheme: string; // "light" | "dark"
   bannerEnabled: boolean;
   bannerText: string;
   syllabusXI: string; // one module per line

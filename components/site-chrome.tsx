@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, ChevronDown, Menu, Moon, Sun, X } from "lucide-react";
+import { ArrowRight, ChevronDown, Menu, X } from "lucide-react";
 import type { Settings } from "@/lib/types";
 import { softNav } from "./scroll-pager";
 import { Logo, WhatsAppIcon } from "./ui";
@@ -31,26 +31,6 @@ const MOBILE = [
   ...MORE,
   { href: "/contact", label: "Contact" },
 ];
-
-function ThemeToggle() {
-  const set = (theme: "light" | "dark") => {
-    document.documentElement.dataset.theme = theme;
-    try {
-      localStorage.setItem("smc-theme", theme);
-    } catch {}
-  };
-  const cell = "grid h-9 w-9 place-items-center rounded-full transition-colors";
-  return (
-    <div role="group" aria-label="Colour theme" className="flex items-center rounded-full border border-line bg-surface p-0.5 shadow-[var(--shadow)]">
-      <button type="button" onClick={() => set("light")} aria-label="Light theme" className={`${cell} bg-[#FFF1E1] text-[#F5861F] dark:bg-transparent dark:text-muted`}>
-        <Sun size={17} aria-hidden="true" />
-      </button>
-      <button type="button" onClick={() => set("dark")} aria-label="Dark theme" className={`${cell} text-muted dark:bg-[#34363d] dark:text-white`}>
-        <Moon size={16} aria-hidden="true" />
-      </button>
-    </div>
-  );
-}
 
 export function Banner({ text }: { text: string }) {
   const [open, setOpen] = useState(true);
@@ -179,8 +159,6 @@ export function Header({ settings, wa }: Chrome) {
           <a href={wa} {...waProps} className="btn btn-primary btn-sm hidden whitespace-nowrap px-4 sm:inline-flex">
             Enquire Now <ArrowRight size={16} aria-hidden="true" />
           </a>
-          <span className="hidden h-8 w-px bg-line sm:block" aria-hidden="true" />
-          <ThemeToggle />
           <button
             type="button"
             className="grid h-11 w-11 place-items-center rounded-lg border border-line bg-surface lg:hidden"

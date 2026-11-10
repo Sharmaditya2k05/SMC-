@@ -35,6 +35,8 @@ export async function PUT(req: Request) {
       if (typeof v === "string" && v && !v.startsWith("https://"))
         return Response.json({ error: `${key} must be a link starting with https://` }, { status: 422 });
     }
+    if (clean.siteTheme !== undefined && clean.siteTheme !== "light" && clean.siteTheme !== "dark")
+      return Response.json({ error: "Choose the light or the dark theme." }, { status: 422 });
     await upsert("site", clean as { id: string });
   }
 
