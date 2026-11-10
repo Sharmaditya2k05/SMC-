@@ -1,13 +1,13 @@
-import { readLocalFile } from "@/lib/store";
+import { readFile } from "@/lib/store";
 
 const MIME: Record<string, string> = {
   pdf: "application/pdf", jpg: "image/jpeg", png: "image/png", webp: "image/webp",
 };
 
-/** Serves files uploaded with the local (development) storage driver. */
+/** Serves uploaded PDFs and photographs. Names are random and never reused, so responses cache forever. */
 export async function GET(_req: Request, { params }: { params: Promise<{ name: string }> }) {
   const { name } = await params;
-  const bytes = await readLocalFile(name);
+  const bytes = await readFile(name);
   if (!bytes) return new Response("Not found", { status: 404 });
   return new Response(new Uint8Array(bytes), {
     headers: {

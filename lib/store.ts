@@ -1,11 +1,14 @@
 /**
  * Tiny document store with two interchangeable drivers:
  *
- *  - Supabase (production): one `documents` table + one public storage bucket.
- *    Used when SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set.
+ *  - Supabase (production). Tables are closed to the public (Row Level Security
+ *    with no policies). The server calls a handful of database functions
+ *    (supabase/schema.sql) using the project's publishable key plus an app
+ *    secret, SMC_API_SECRET, which the functions verify against a stored hash.
+ *    No service-role key is needed anywhere.
  *  - Local files (development): JSON files in .data/, uploads in .data/uploads.
  *
- * Both are server-only. The service-role key never reaches the browser.
+ * Both are server-only: the app secret never reaches the browser.
  */
 import { promises as fs } from "node:fs";
 import path from "node:path";
@@ -15,17 +18,23 @@ export type Doc = { id: string; createdAt?: string } & Record<string, unknown>;
 
 const DATA_DIR = process.env.DATA_DIR || path.join(process.cwd(), ".data");
 const SEED_DIR = path.join(process.cwd(), "data", "seed");
-const BUCKET = process.env.SUPABASE_BUCKET || "smc-files";
 
 let client: SupabaseClient | null = null;
 function supabase() {
   const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) return null;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key || !process.env.SMC_API_SECRET) return null;
   client ??= createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
   return client;
 }
+const secret = () => process.env.SMC_API_SECRET ?? "";
 export const storeDriver = () => (supabase() ? "supabase" : "local");
+
+async function rpc<T>(sb: SupabaseClient, fn: string, args: Record<string, unknown>): Promise<T> {
+  const { data, error } = await sb.rpc(fn, args);
+  if (error) throw new Error(`${fn}: ${error.message}`);
+  return data as T;
+}
 
 /* ---------------- local driver ---------------- */
 
@@ -59,9 +68,8 @@ function writeLocal(collection: string, mutate: (docs: Doc[]) => Doc[]) {
 export async function list<T extends Doc>(collection: string): Promise<T[]> {
   const sb = supabase();
   if (!sb) return (await readLocal(collection)) as T[];
-  const { data, error } = await sb.from("documents").select("id,data,created_at").eq("collection", collection);
-  if (error) throw new Error(error.message);
-  return (data ?? []).map((r) => ({ ...(r.data as object), id: r.id, createdAt: r.created_at }) as T);
+  const rows = await rpc<{ id: string; data: object; created_at: string }[]>(sb, "smc_list", { p_secret: secret(), p_collection: collection });
+  return (rows ?? []).map((r) => ({ ...r.data, id: r.id, createdAt: r.created_at }) as T);
 }
 
 export async function get<T extends Doc>(collection: string, id: string): Promise<T | null> {
@@ -79,10 +87,7 @@ export async function upsert(collection: string, doc: Doc) {
     });
   }
   const { id, createdAt, ...data } = doc;
-  const { error } = await sb
-    .from("documents")
-    .upsert({ collection, id, data, ...(createdAt ? { created_at: createdAt } : {}) }, { onConflict: "collection,id" });
-  if (error) throw new Error(error.message);
+  await rpc(sb, "smc_upsert", { p_secret: secret(), p_collection: collection, p_id: id, p_data: data, p_created_at: createdAt ?? null });
 }
 
 export async function upsertMany(collection: string, docs: Doc[]) {
@@ -92,27 +97,29 @@ export async function upsertMany(collection: string, docs: Doc[]) {
 export async function remove(collection: string, id: string) {
   const sb = supabase();
   if (!sb) return writeLocal(collection, (docs) => docs.filter((d) => d.id !== id));
-  const { error } = await sb.from("documents").delete().eq("collection", collection).eq("id", id);
-  if (error) throw new Error(error.message);
+  await rpc(sb, "smc_delete", { p_secret: secret(), p_collection: collection, p_id: id });
 }
 
+/** Stores an upload and returns the URL it is served from (/files/<name>). */
 export async function saveFile(name: string, bytes: Buffer, contentType: string): Promise<string> {
   const sb = supabase();
   if (!sb) {
     const dir = path.join(DATA_DIR, "uploads");
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(path.join(dir, name), bytes);
-    return `/files/${name}`;
+  } else {
+    await rpc(sb, "smc_put_file", { p_secret: secret(), p_name: name, p_content_type: contentType, p_base64: bytes.toString("base64") });
   }
-  const { error } = await sb.storage.from(BUCKET).upload(name, bytes, { contentType, upsert: false });
-  if (error) throw new Error(error.message);
-  return sb.storage.from(BUCKET).getPublicUrl(name).data.publicUrl;
+  return `/files/${name}`;
 }
 
-export async function readLocalFile(name: string) {
+export async function readFile(name: string): Promise<Buffer | null> {
   if (!/^[\w-]+\.(pdf|jpg|png|webp)$/.test(name)) return null;
+  const sb = supabase();
   try {
-    return await fs.readFile(path.join(DATA_DIR, "uploads", name));
+    if (!sb) return await fs.readFile(path.join(DATA_DIR, "uploads", name));
+    const rows = await rpc<{ base64: string }[]>(sb, "smc_get_file", { p_name: name });
+    return rows?.[0] ? Buffer.from(rows[0].base64, "base64") : null;
   } catch {
     return null;
   }
