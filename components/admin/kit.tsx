@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import {
-  CalendarDays, FileText, Image as ImageIcon, KeyRound, LayoutDashboard, LogOut, Megaphone, Settings, Trophy, ArrowUp, ArrowDown,
+  CalendarDays, FileText, Image as ImageIcon, KeyRound, LayoutDashboard, LogOut, Megaphone, Palette, Settings, Trophy, ArrowUp, ArrowDown,
 } from "lucide-react";
 
 /* ---------- API helper: every call re-checks the session on the server ---------- */
@@ -37,6 +37,7 @@ const LINKS = [
   { href: "/admin/gallery", label: "Gallery", icon: ImageIcon },
   { href: "/admin/stories", label: "Results & testimonials", icon: Trophy },
   { href: "/admin/settings", label: "Website settings", icon: Settings },
+  { href: "/admin/theme", label: "Website theme", icon: Palette },
   { href: "/admin/password", label: "Admin password", icon: KeyRound },
 ];
 

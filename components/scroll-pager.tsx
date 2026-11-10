@@ -39,23 +39,65 @@ export function PageSpy() {
       { rootMargin: "-22% 0px -72% 0px" },
     );
     pages.forEach((p) => io.observe(p));
-    return () => io.disconnect();
+
+    // Every link to one of the stacked pages (logo, menu, footer, buttons) goes
+    // through softNav, so it works the same wherever it is tapped.
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = (e.target as Element | null)?.closest?.<HTMLAnchorElement>("a[href]");
+      if (!a || a.target === "_blank" || a.hasAttribute("download")) return;
+      const url = new URL(a.href, window.location.href);
+      if (url.origin !== window.location.origin || !STACKED.includes(url.pathname)) return;
+      softNav(e, url.pathname + url.hash);
+    };
+    document.addEventListener("click", onClick, true);
+    return () => {
+      io.disconnect();
+      document.removeEventListener("click", onClick, true);
+    };
   }, []);
   return null;
 }
 
+const STACKED = ["/", "/about", "/courses", "/timetable", "/study-material", "/methodology", "/results", "/gallery", "/faqs", "/contact"];
+let pendingCheck: ReturnType<typeof setTimeout> | undefined;
+
 /**
  * Navbar helper: if the destination page (or anchor) is already part of the
- * current scroll, glide to it instead of loading the route again.
- * Returns true when it handled the click.
+ * current scroll, move to it instead of loading the route again. A page that
+ * is not in the current scroll (for example Home, when the visit started on a
+ * later page) is opened with a normal page load, because the address bar has
+ * been following the scroll and no longer matches what the router has loaded.
+ * Always handles the click and returns true.
  */
 export function softNav(e: { preventDefault: () => void }, href: string) {
+  e.preventDefault();
   const [path, hash] = href.split("#");
   const target = (hash && document.getElementById(hash)) || document.querySelector<HTMLElement>(`[data-page="${path || "/"}"]`);
-  if (!target) return false;
-  e.preventDefault();
+  if (!target) {
+    window.location.assign(href);
+    return true;
+  }
+  // The open mobile menu locks the page; phones ignore a scroll while it is locked.
+  document.body.style.overflow = "";
+  clearTimeout(pendingCheck);
+  const top = path === "/" && !hash ? 0 : Math.max(0, target.getBoundingClientRect().top + window.scrollY - 76);
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const top = target.getBoundingClientRect().top + window.scrollY - 76;
-  window.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
+  const far = Math.abs(top - window.scrollY) > window.innerHeight * 3;
+  if (reduce || far) {
+    window.scrollTo({ top, behavior: "instant" });
+    return true;
+  }
+  window.scrollTo({ top, behavior: "smooth" });
+  // Some phones drop a smooth scroll half way. If it did not arrive, jump.
+  let touched = false;
+  const stop = () => (touched = true);
+  window.addEventListener("touchstart", stop, { once: true, passive: true });
+  window.addEventListener("wheel", stop, { once: true, passive: true });
+  pendingCheck = setTimeout(() => {
+    window.removeEventListener("touchstart", stop);
+    window.removeEventListener("wheel", stop);
+    if (!touched && Math.abs(window.scrollY - top) > 24) window.scrollTo({ top, behavior: "instant" });
+  }, 1100);
   return true;
 }

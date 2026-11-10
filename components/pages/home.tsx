@@ -49,11 +49,11 @@ export default async function Home() {
               <Link href="/study-material" className="btn btn-outline"><FileText size={17} aria-hidden="true" /> Get Study Material</Link>
             </Rise>
             <Rise delay={0.32}>
-              <ul className="mt-7 hidden flex-wrap gap-y-3 text-sm font-medium sm:flex sm:divide-x sm:divide-line">
-                {["Concept-Focused Learning", "Structured Classroom Teaching", "Dedicated XI & XII Batches"].map((t, i) => (
-                  <li key={t} className={`flex w-1/2 items-center gap-2.5 sm:w-auto ${i ? "sm:pl-5" : ""} sm:pr-5`}>
+              <ul className="mt-7 hidden text-sm font-medium sm:flex sm:divide-x sm:divide-line">
+                {["Concept-Focused Learning", "Structured Classroom Teaching", "Dedicated XI & XII Batches"].map((t) => (
+                  <li key={t} className="flex items-center gap-2.5 px-5 first:pl-0 last:pr-0">
                     <Check size={20} strokeWidth={3} className="shrink-0 text-accent" aria-hidden="true" />
-                    <span className="max-w-32 leading-tight">{t}</span>
+                    <span className="max-w-[9.5rem] text-balance leading-snug">{t}</span>
                   </li>
                 ))}
               </ul>
