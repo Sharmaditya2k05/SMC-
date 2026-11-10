@@ -108,7 +108,7 @@ Design the desktop "Study Material" page (1440px) for S.M.C – Siddhu Mathemati
 
 Header: heading "Learn. Revise. Practice." and line "Access selected learning resources and sample Mathematics notes."
 
-A filter bar that stays stuck under the navbar while scrolling: search field "Search by chapter or topic, e.g. Integrals", a sort dropdown "Recently added", class chips (All Resources, Class XI, Class XII, JEE Notes) and type chips (Chapter-wise Notes, Formula Sheets, Practice Questions, Sample Papers). Selected chip is charcoal; show a count "47 resources available".
+A filter bar that stays stuck under the navbar while scrolling: search field "Search by chapter or topic, e.g. Integrals", a sort dropdown "Recently added", class chips (All Resources, Class XI, Class XII, JEE Notes) and type chips (Chapter-wise Notes, Formula Sheets, Practice Questions, Sample Papers). Selected chip is charcoal; show a count "6 resources available".
 
 Below, a four-column grid of resource cards. Each card: a PDF first-page thumbnail (handwritten-style maths notes page) with a small "PDF" badge, a class tag (Class XI charcoal, Class XII orange, JEE outlined), title such as "Sets – Notes", "Trigonometry – Notes", "Matrices – Notes", "Definite Integrals – Notes", chapter line such as "Chapter 3 · Trigonometric Functions", and two buttons "Preview" and "Download". Group the grid with large quiet section labels that scroll past: Class XI, Class XII, JEE Notes.
 

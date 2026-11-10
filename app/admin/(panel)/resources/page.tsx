@@ -15,7 +15,7 @@ function SyncButton({ reload, say }: { reload: () => void; say: (m: string) => v
         setBusy(true);
         try {
           const r = await api<{ added: number; found: number }>("/api/admin/sync-drive", { method: "POST" });
-          say(r.added ? `Imported ${r.added} new PDF${r.added === 1 ? "" : "s"} from Google Drive.` : `Google Drive checked – all ${r.found} files are already in the library.`);
+          say(r.added ? `Imported ${r.added} new PDF${r.added === 1 ? "" : "s"} from Google Drive as unpublished. Publish the ones you want students to see.` : `Google Drive checked – all ${r.found} files are already in the library.`);
           reload();
         } catch (e) {
           say((e as Error).message);

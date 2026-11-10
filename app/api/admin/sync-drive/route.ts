@@ -22,7 +22,9 @@ export async function POST(req: Request) {
     const fresh = files
       .filter((f) => !have.has(f.id))
       .map((f, i) => driveFileToResource(f, new Date(now - i * 1000).toISOString()))
-      .filter((r): r is NonNullable<typeof r> => !!r);
+      .filter((r): r is NonNullable<typeof r> => !!r)
+      // imported files start hidden; the teacher chooses which ones to publish
+      .map((r) => ({ ...r, published: false }));
     await upsertMany("resources", fresh);
     revalidateTag(CONTENT_TAG, "max");
     return Response.json({ added: fresh.length, found: files.length });

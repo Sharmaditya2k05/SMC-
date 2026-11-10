@@ -43,3 +43,9 @@ next-env.d.ts
 # local data store and uploads
 /.data
 !.env.example
+
+.vercel
+.env*
+
+# production admin credentials (kept on this computer only)
+/admin-credentials.local.txt
